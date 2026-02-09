@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "auckland-pedestrian"
+version = "0.1.0"
+description = "Hourly pedestrian count data from Heart of the City Auckland's monitoring system (2019–2025), covering 21 sensor locations across Auckland CBD."
+readme = "README.md"
+license = "CC-BY-4.0"
+requires-python = ">=3.9"
+authors = [
+    { name = "Hyesop Shin", email = "shinhyesop@gmail.com" },
+]
+keywords = [
+    "pedestrian",
+    "auckland",
+    "urban",
+    "transport",
+    "giscience",
+    "open-data",
+    "new-zealand",
+    "pedestrian-counting",
+    "city-centre",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "pandas>=1.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/hyesop/auckland-pedestrian"
+Repository = "https://github.com/hyesop/auckland-pedestrian"
+Documentation = "https://github.com/hyesop/auckland-pedestrian#readme"
+"Data Source" = "https://www.hotcity.co.nz/city-centre/results-and-statistics/pedestrian-counts"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/auckland_pedestrian/**",
+    "README.md",
+    "LICENSE",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/auckland_pedestrian"]

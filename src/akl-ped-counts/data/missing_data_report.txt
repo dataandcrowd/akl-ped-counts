@@ -1,0 +1,95 @@
+MISSING DATA REPORT
+================================================================================
+
+Year 2019
+----------------------------------------
+  Total rows: 8760
+  Sensors with missing data:
+    188 Quay Street Lower Albert (EW): 8760 (100.00%)
+    188 Quay Street Lower Albert (NS): 8760 (100.00%)
+  Overall: 17520 missing values out of 183960 (9.52%)
+
+Year 2020
+----------------------------------------
+  Total rows: 8784
+  Sensors with missing data:
+    188 Quay Street Lower Albert (EW): 8784 (100.00%)
+    188 Quay Street Lower Albert (NS): 8784 (100.00%)
+  Overall: 17568 missing values out of 184464 (9.52%)
+
+Year 2021
+----------------------------------------
+  Total rows: 8760
+  Sensors with missing data:
+    188 Quay Street Lower Albert (EW): 8760 (100.00%)
+    188 Quay Street Lower Albert (NS): 8760 (100.00%)
+  Overall: 17520 missing values out of 183960 (9.52%)
+
+Year 2022
+----------------------------------------
+  Total rows: 8760
+  Sensors with missing data:
+    188 Quay Street Lower Albert (EW): 5832 (66.58%)
+    188 Quay Street Lower Albert (NS): 5832 (66.58%)
+    107 Quay Street: 3432 (39.18%)
+  Overall: 15096 missing values out of 183960 (8.21%)
+
+Year 2023
+----------------------------------------
+  Total rows: 8760
+  Sensors with missing data:
+    107 Quay Street: 1 (0.01%)
+    Te Ara Tahuhu Walkway: 1 (0.01%)
+    Commerce Street West: 1 (0.01%)
+    7 Custom Street East: 1 (0.01%)
+    45 Queen Street: 1 (0.01%)
+    30 Queen Street: 1 (0.01%)
+    19 Shortland Street: 1 (0.01%)
+    2 High Street: 1 (0.01%)
+    1 Courthouse Lane: 1 (0.01%)
+    61 Federal Street: 1 (0.01%)
+    59 High Street: 1 (0.01%)
+    210 Queen Street: 1 (0.01%)
+    205 Queen Street: 1 (0.01%)
+    8 Darby Street EW: 1 (0.01%)
+    8 Darby Street NS: 1 (0.01%)
+    261 Queen Street: 1 (0.01%)
+    297 Queen Street: 1 (0.01%)
+    150 K Road: 1 (0.01%)
+    183 K Road: 1 (0.01%)
+    188 Quay Street Lower Albert (EW): 1 (0.01%)
+    188 Quay Street Lower Albert (NS): 1 (0.01%)
+  Overall: 21 missing values out of 183960 (0.01%)
+
+Year 2024
+----------------------------------------
+  Total rows: 8783
+  No missing data
+  Overall: 0 missing values out of 184443 (0.00%)
+
+Year 2025
+----------------------------------------
+  Total rows: 8760
+  Sensors with missing data:
+    107 Quay Street: 1 (0.01%)
+    Te Ara Tahuhu Walkway: 1 (0.01%)
+    Commerce Street West: 1 (0.01%)
+    7 Custom Street East: 1 (0.01%)
+    45 Queen Street: 1 (0.01%)
+    30 Queen Street: 1 (0.01%)
+    19 Shortland Street: 1 (0.01%)
+    2 High Street: 1 (0.01%)
+    1 Courthouse Lane: 1 (0.01%)
+    61 Federal Street: 1 (0.01%)
+    59 High Street: 1 (0.01%)
+    210 Queen Street: 1 (0.01%)
+    205 Queen Street: 1 (0.01%)
+    8 Darby Street EW: 1 (0.01%)
+    8 Darby Street NS: 1 (0.01%)
+    261 Queen Street: 1 (0.01%)
+    297 Queen Street: 1 (0.01%)
+    150 K Road: 1 (0.01%)
+    183 K Road: 1 (0.01%)
+    188 Quay Street Lower Albert (EW): 1 (0.01%)
+    188 Quay Street Lower Albert (NS): 1 (0.01%)
+  Overall: 21 missing values out of 183960 (0.01%)
