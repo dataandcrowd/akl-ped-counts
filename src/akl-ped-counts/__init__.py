@@ -1,5 +1,5 @@
 """
-auckland-pedestrian
+Auckland Pedestrian Counts
 ===================
 
 Hourly pedestrian count data from Heart of the City Auckland's pedestrian
