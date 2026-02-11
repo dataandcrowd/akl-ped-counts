@@ -1,0 +1,58 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Auckland Pedestrian Counts"
+  site-url: https://yourusername.github.io/akl-ped-counts
+  repo-url: https://github.com/yourusername/akl-ped-counts
+  repo-actions: [edit, issue]
+
+  navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Getting Started"
+        file: getting-started.qmd
+      - text: "Examples"
+        file: examples.qmd
+      - text: "API Reference"
+        file: api-reference.qmd
+    right:
+      - icon: github
+        href: https://github.com/yourusername/akl-ped-counts
+      - icon: download
+        href: https://pypi.org/project/akl-ped-counts/
+
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "Overview"
+        contents:
+          - index.qmd
+          - getting-started.qmd
+      - section: "Documentation"
+        contents:
+          - api-reference.qmd
+          - data-coverage.qmd
+          - missing-data.qmd
+      - section: "Examples"
+        contents:
+          - examples.qmd
+          - visualizations.qmd
+
+format:
+  html:
+    theme:
+      light: [cosmo, custom.scss]
+    css: styles.css
+    toc: true
+    code-copy: true
+    code-fold: false
+    grid:
+      sidebar-width: 250px
+      body-width: 900px
+      margin-width: 250px

@@ -1,0 +1,152 @@
+---
+title: "Getting Started"
+---
+
+## Installation
+
+Install **akl-ped-counts** via pip:
+
+```bash
+# Core package (pandas only)
+pip install akl-ped-counts
+```
+
+### Optional Dependencies
+
+Install with additional features:
+
+```bash
+# With Polars support
+pip install "akl-ped-counts[polars]"
+
+# With plotting (matplotlib + seaborn)
+pip install "akl-ped-counts[plot]"
+
+# With mapping (folium)
+pip install "akl-ped-counts[geo]"
+
+# Everything
+pip install "akl-ped-counts[all]"
+```
+
+## Quick Start
+
+### Loading Data
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly, load_locations, list_sensors
+
+# Load all hourly counts (61,000+ rows × 21 sensors)
+counts = load_hourly()
+
+# Load sensor coordinates (WGS 84)
+locations = load_locations()
+
+# See all 21 sensor names
+sensors = list_sensors()
+print(f"Available sensors: {len(sensors)}")
+```
+
+### Filtering Data
+
+Filter by year:
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly
+
+# Get 2024 data only
+df_2024 = load_hourly(years=[2024])
+
+# Multiple years
+df_recent = load_hourly(years=[2023, 2024])
+```
+
+Filter by sensor:
+
+```{python}
+#| eval: false
+# Specific sensors only
+df = load_hourly(sensors=["45 Queen Street", "210 Queen Street"])
+```
+
+Remove missing values:
+
+```{python}
+#| eval: false
+# Drop rows with any missing values
+df_clean = load_hourly(dropna=True)
+```
+
+### Aggregated Data
+
+Load daily or monthly totals:
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_daily, load_monthly
+
+# Daily totals
+daily = load_daily(years=[2024])
+
+# Monthly totals
+monthly = load_monthly()
+```
+
+## Using Polars
+
+For faster performance with large datasets, use Polars:
+
+```{python}
+#| eval: false
+from akl_ped_counts.polars_loader import load_hourly, scan_hourly
+import polars as pl
+
+# Load as Polars DataFrame
+df = load_hourly(years=[2023, 2024])
+print(df.shape)
+
+# Use LazyFrame for deferred execution
+lf = scan_hourly(years=[2024])
+result = (
+    lf.group_by("date")
+    .agg(pl.col("45 Queen Street").sum())
+    .sort("date")
+    .collect()
+)
+```
+
+## Basic Analysis
+
+### Top 5 Busiest Locations
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+# Total counts by sensor
+totals = df[sensor_cols].sum().sort_values(ascending=False)
+print(totals.head())
+```
+
+### Average Hourly Footfall
+
+```{python}
+#| eval: false
+# Extract hour from time range
+df["start_hour"] = df["hour"].str.split(":").str[0].astype(int)
+
+# Average by hour across all sensors
+hourly_avg = df.groupby("start_hour")[sensor_cols].mean().mean(axis=1)
+print(hourly_avg)
+```
+
+## Next Steps
+
+- [API Reference](api-reference.qmd) - Complete function documentation
+- [Examples](examples.qmd) - Visualization examples
+- [Missing Data](missing-data.qmd) - Handling missing values

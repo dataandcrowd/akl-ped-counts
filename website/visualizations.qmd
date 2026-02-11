@@ -1,0 +1,242 @@
+---
+title: "Visualization Gallery"
+---
+
+This page showcases various ways to visualize the pedestrian count data.
+
+## Time Series Analysis
+
+### Daily Trends for a Single Sensor
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_daily
+
+daily = load_daily(years=[2024])
+
+plt.figure(figsize=(12, 6))
+plt.plot(daily["date"], daily["45 Queen Street"])
+plt.title("Daily Pedestrian Counts - 45 Queen Street (2024)")
+plt.xlabel("Date")
+plt.ylabel("Daily Count")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
+### Comparing Multiple Locations
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_monthly
+
+monthly = load_monthly()
+sensors = ["45 Queen Street", "210 Queen Street", "297 Queen Street"]
+
+plt.figure(figsize=(12, 6))
+for sensor in sensors:
+    plt.plot(monthly["year"].astype(str) + "-" + monthly["month"].astype(str),
+             monthly[sensor], label=sensor, marker='o')
+plt.title("Monthly Pedestrian Counts - Top 3 Locations")
+plt.xlabel("Year-Month")
+plt.ylabel("Monthly Count")
+plt.legend()
+plt.xticks(rotation=90)
+plt.tight_layout()
+plt.show()
+```
+
+## Heatmaps
+
+### Weekly Patterns
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+import seaborn as sns
+from akl_ped_counts import load_hourly
+
+df = load_hourly(dropna=True)
+df["start_hour"] = df["hour"].str.split(":").str[0].astype(int)
+df["dow"] = df["date"].dt.dayofweek
+
+# Focus on one sensor
+pivot = df.pivot_table(
+    values="45 Queen Street",
+    index="start_hour",
+    columns="dow",
+    aggfunc="mean"
+)
+pivot.columns = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(pivot, annot=True, fmt=".0f", cmap="Blues")
+plt.title("45 Queen Street - Average Hourly Footfall by Day")
+plt.ylabel("Hour of Day")
+plt.xlabel("Day of Week")
+plt.tight_layout()
+plt.show()
+```
+
+### Seasonal Patterns
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+import seaborn as sns
+from akl_ped_counts import load_monthly
+
+monthly = load_monthly()
+
+# Focus on one sensor
+pivot = monthly.pivot_table(
+    values="45 Queen Street",
+    index="month",
+    columns="year",
+    aggfunc="sum"
+)
+
+plt.figure(figsize=(10, 6))
+sns.heatmap(pivot, annot=True, fmt=".0f", cmap="YlOrRd")
+plt.title("45 Queen Street - Monthly Totals by Year")
+plt.ylabel("Month")
+plt.xlabel("Year")
+plt.tight_layout()
+plt.show()
+```
+
+## Comparative Analysis
+
+### Top vs Bottom Performers
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+totals = df[sensor_cols].sum().sort_values()
+
+# Top 5 and bottom 5
+top5 = totals.tail(5)
+bottom5 = totals.head(5)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+# Top 5
+ax1.barh(top5.index, top5.values, color='green')
+ax1.set_title("Top 5 Busiest Sensors")
+ax1.set_xlabel("Total Count")
+
+# Bottom 5
+ax2.barh(bottom5.index, bottom5.values, color='red')
+ax2.set_title("5 Quietest Sensors")
+ax2.set_xlabel("Total Count")
+
+plt.tight_layout()
+plt.show()
+```
+
+## Geographic Visualization
+
+### Simple Scatter Plot
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_hourly, load_locations
+
+locs = load_locations()
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+totals = df[sensor_cols].sum()
+
+# Merge location data
+locs["total"] = locs["Address"].map(totals)
+
+plt.figure(figsize=(10, 8))
+plt.scatter(locs["Longitude"], locs["Latitude"],
+            s=locs["total"]/10000, alpha=0.6, c=locs["total"],
+            cmap='YlOrRd')
+plt.colorbar(label="Total Count")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.title("Sensor Locations by Total Footfall")
+plt.tight_layout()
+plt.show()
+```
+
+## Statistical Distributions
+
+### Distribution of Hourly Counts
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+
+plt.figure(figsize=(12, 6))
+plt.hist(df["45 Queen Street"].dropna(), bins=50, edgecolor='black')
+plt.xlabel("Hourly Count")
+plt.ylabel("Frequency")
+plt.title("Distribution of Hourly Counts - 45 Queen Street")
+plt.tight_layout()
+plt.show()
+```
+
+### Box Plots by Year
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+
+fig, ax = plt.subplots(figsize=(12, 6))
+df.boxplot(column="45 Queen Street", by="year", ax=ax)
+plt.xlabel("Year")
+plt.ylabel("Hourly Count")
+plt.title("45 Queen Street - Hourly Count Distribution by Year")
+plt.suptitle("")  # Remove default title
+plt.tight_layout()
+plt.show()
+```
+
+## COVID-19 Impact Analysis
+
+### Year-over-Year Comparison
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_monthly
+
+monthly = load_monthly()
+sensor = "45 Queen Street"
+
+fig, ax = plt.subplots(figsize=(12, 6))
+for year in monthly["year"].unique():
+    year_data = monthly[monthly["year"] == year]
+    ax.plot(year_data["month"], year_data[sensor], label=str(year), marker='o')
+
+plt.xlabel("Month")
+plt.ylabel("Monthly Count")
+plt.title(f"{sensor} - Monthly Counts by Year (COVID-19 Impact)")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## Next Steps
+
+- [Examples](examples.qmd) - Code examples for common tasks
+- [API Reference](api-reference.qmd) - Complete function documentation
+- [Data Coverage](data-coverage.qmd) - Understanding the dataset

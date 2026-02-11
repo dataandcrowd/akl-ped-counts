@@ -1,0 +1,578 @@
+[
+  {
+    "objectID": "getting-started.html",
+    "href": "getting-started.html",
+    "title": "Getting Started",
+    "section": "",
+    "text": "Install akl-ped-counts via pip:\n# Core package (pandas only)\npip install akl-ped-counts\n\n\nInstall with additional features:\n# With Polars support\npip install \"akl-ped-counts[polars]\"\n\n# With plotting (matplotlib + seaborn)\npip install \"akl-ped-counts[plot]\"\n\n# With mapping (folium)\npip install \"akl-ped-counts[geo]\"\n\n# Everything\npip install \"akl-ped-counts[all]\"",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Getting Started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#installation",
+    "href": "getting-started.html#installation",
+    "title": "Getting Started",
+    "section": "",
+    "text": "Install akl-ped-counts via pip:\n# Core package (pandas only)\npip install akl-ped-counts\n\n\nInstall with additional features:\n# With Polars support\npip install \"akl-ped-counts[polars]\"\n\n# With plotting (matplotlib + seaborn)\npip install \"akl-ped-counts[plot]\"\n\n# With mapping (folium)\npip install \"akl-ped-counts[geo]\"\n\n# Everything\npip install \"akl-ped-counts[all]\"",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Getting Started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#quick-start",
+    "href": "getting-started.html#quick-start",
+    "title": "Getting Started",
+    "section": "Quick Start",
+    "text": "Quick Start\n\nLoading Data\n\nfrom akl_ped_counts import load_hourly, load_locations, list_sensors\n\n# Load all hourly counts (61,000+ rows × 21 sensors)\ncounts = load_hourly()\n\n# Load sensor coordinates (WGS 84)\nlocations = load_locations()\n\n# See all 21 sensor names\nsensors = list_sensors()\nprint(f\"Available sensors: {len(sensors)}\")\n\n\n\nFiltering Data\nFilter by year:\n\nfrom akl_ped_counts import load_hourly\n\n# Get 2024 data only\ndf_2024 = load_hourly(years=[2024])\n\n# Multiple years\ndf_recent = load_hourly(years=[2023, 2024])\n\nFilter by sensor:\n\n# Specific sensors only\ndf = load_hourly(sensors=[\"45 Queen Street\", \"210 Queen Street\"])\n\nRemove missing values:\n\n# Drop rows with any missing values\ndf_clean = load_hourly(dropna=True)\n\n\n\nAggregated Data\nLoad daily or monthly totals:\n\nfrom akl_ped_counts import load_daily, load_monthly\n\n# Daily totals\ndaily = load_daily(years=[2024])\n\n# Monthly totals\nmonthly = load_monthly()",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Getting Started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#using-polars",
+    "href": "getting-started.html#using-polars",
+    "title": "Getting Started",
+    "section": "Using Polars",
+    "text": "Using Polars\nFor faster performance with large datasets, use Polars:\n\nfrom akl_ped_counts.polars_loader import load_hourly, scan_hourly\nimport polars as pl\n\n# Load as Polars DataFrame\ndf = load_hourly(years=[2023, 2024])\nprint(df.shape)\n\n# Use LazyFrame for deferred execution\nlf = scan_hourly(years=[2024])\nresult = (\n    lf.group_by(\"date\")\n    .agg(pl.col(\"45 Queen Street\").sum())\n    .sort(\"date\")\n    .collect()\n)",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Getting Started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#basic-analysis",
+    "href": "getting-started.html#basic-analysis",
+    "title": "Getting Started",
+    "section": "Basic Analysis",
+    "text": "Basic Analysis\n\nTop 5 Busiest Locations\n\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\n\n# Total counts by sensor\ntotals = df[sensor_cols].sum().sort_values(ascending=False)\nprint(totals.head())\n\n\n\nAverage Hourly Footfall\n\n# Extract hour from time range\ndf[\"start_hour\"] = df[\"hour\"].str.split(\":\").str[0].astype(int)\n\n# Average by hour across all sensors\nhourly_avg = df.groupby(\"start_hour\")[sensor_cols].mean().mean(axis=1)\nprint(hourly_avg)",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Getting Started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#next-steps",
+    "href": "getting-started.html#next-steps",
+    "title": "Getting Started",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nAPI Reference - Complete function documentation\nExamples - Visualization examples\nMissing Data - Handling missing values",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Getting Started"
+    ]
+  },
+  {
+    "objectID": "missing-data.html",
+    "href": "missing-data.html",
+    "title": "Handling Missing Data",
+    "section": "",
+    "text": "Missing values appear as NaN (pandas) or null (Polars) in the count columns. They arise from three sources:\n\nSensors not yet installed (structural missingness)\nSensor downtime/maintenance (temporary gaps)\nData transmission failures (rare, short gaps)",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "missing-data.html#overview",
+    "href": "missing-data.html#overview",
+    "title": "Handling Missing Data",
+    "section": "",
+    "text": "Missing values appear as NaN (pandas) or null (Polars) in the count columns. They arise from three sources:\n\nSensors not yet installed (structural missingness)\nSensor downtime/maintenance (temporary gaps)\nData transmission failures (rare, short gaps)",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "missing-data.html#structural-missingness",
+    "href": "missing-data.html#structural-missingness",
+    "title": "Handling Missing Data",
+    "section": "Structural Missingness",
+    "text": "Structural Missingness\n\n2022 Sensor Additions\nTwo sensors were added in 2022:\n\n188 Quay Street Lower Albert (EW)\n188 Quay Street Lower Albert (NS)\n\nThese sensors have NaN for 2019-2021.\n\n\nWorking with Uniform Panel\nTo work with a consistent set of sensors across all years, filter to the 19 original sensors:\nPandas:\n\nfrom akl_ped_counts import load_hourly, SENSORS_ADDED_2022\n\ndf = load_hourly()\noriginal = [c for c in df.columns\n            if c not in (\"date\", \"hour\", \"year\")\n            and c not in SENSORS_ADDED_2022]\ndf_uniform = df[[\"date\", \"hour\", \"year\"] + original]\n\nPolars:\n\nfrom akl_ped_counts.polars_loader import load_hourly\nfrom akl_ped_counts import SENSORS_ADDED_2022\n\ndf = load_hourly()\nkeep = [c for c in df.columns\n        if c not in (\"date\", \"hour\", \"year\")\n        and c not in SENSORS_ADDED_2022]\ndf_uniform = df.select([\"date\", \"hour\", \"year\"] + keep)",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "missing-data.html#sensor-level-gaps",
+    "href": "missing-data.html#sensor-level-gaps",
+    "title": "Handling Missing Data",
+    "section": "Sensor-Level Gaps",
+    "text": "Sensor-Level Gaps\n\nHigh Missingness\n107 Quay Street has ~5.6% missing overall, concentrated in 2022 during extended sensor maintenance.\n\n\nMinor Gaps\n150 K Road has ~1.6% missing in 2023.",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "missing-data.html#handling-strategies",
+    "href": "missing-data.html#handling-strategies",
+    "title": "Handling Missing Data",
+    "section": "Handling Strategies",
+    "text": "Handling Strategies\n\n1. Drop Missing Rows\nSimplest approach, recommended when completeness matters:\n\n# Pandas\nfrom akl_ped_counts import load_hourly\ndf = load_hourly(dropna=True)\n\n# Polars\nfrom akl_ped_counts.polars_loader import load_hourly as pl_load\ndf = pl_load(dropna=True)\n\n\n\n2. Forward/Backward Fill\nSuitable for short gaps (a few hours):\n\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\n\n# Fill up to 3 consecutive hours\ndf[sensor_cols] = df[sensor_cols].ffill(limit=3)\n\n\n\n3. Linear Interpolation\nSmooth estimation across moderate gaps:\n\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\n\n# Interpolate up to 6 hours\ndf[sensor_cols] = df[sensor_cols].interpolate(method=\"linear\", limit=6)\n\n\n\n4. Seasonal Median Fill\nUse the median for the same hour and day-of-week:\n\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\ndf[\"dow\"] = df[\"date\"].dt.dayofweek\n\nfor sensor in sensor_cols:\n    mask = df[sensor].isna()\n    if mask.any():\n        medians = df.groupby([\"dow\", \"hour\"])[sensor].transform(\"median\")\n        df.loc[mask, sensor] = medians[mask]",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "missing-data.html#inspecting-missing-data",
+    "href": "missing-data.html#inspecting-missing-data",
+    "title": "Handling Missing Data",
+    "section": "Inspecting Missing Data",
+    "text": "Inspecting Missing Data\n\nSummary Report\n\nfrom akl_ped_counts import describe_missing\n\nreport = describe_missing()\nprint(report.query(\"pct_missing &gt; 0\").sort_values(\"pct_missing\", ascending=False))\n\n\n\nVisualize Missingness\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\n\n# Count missing by sensor\nmissing_counts = df[sensor_cols].isna().sum().sort_values(ascending=False)\n\nplt.figure(figsize=(10, 6))\nmissing_counts.plot(kind=\"barh\")\nplt.xlabel(\"Missing Observations\")\nplt.title(\"Missing Data by Sensor\")\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "missing-data.html#best-practices",
+    "href": "missing-data.html#best-practices",
+    "title": "Handling Missing Data",
+    "section": "Best Practices",
+    "text": "Best Practices\n\nUnderstand the cause: Check if missing values are structural (sensor not installed) or temporary (downtime)\nChoose appropriate method: Match the imputation method to your analysis goals\nDocument your approach: Always note how you handled missing data in your analysis\nTest sensitivity: For critical analyses, check if results change with different missing data strategies",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "missing-data.html#next-steps",
+    "href": "missing-data.html#next-steps",
+    "title": "Handling Missing Data",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nData Coverage - Overall data quality\nAPI Reference - Function documentation\nExamples - Practical use cases",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Handling Missing Data"
+    ]
+  },
+  {
+    "objectID": "examples.html",
+    "href": "examples.html",
+    "title": "Examples",
+    "section": "",
+    "text": "To run these examples, install the package with visualization dependencies:\npip install \"akl-ped-counts[all]\"",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "examples.html#installation-for-examples",
+    "href": "examples.html#installation-for-examples",
+    "title": "Examples",
+    "section": "",
+    "text": "To run these examples, install the package with visualization dependencies:\npip install \"akl-ped-counts[all]\"",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "examples.html#march-daily-trajectories",
+    "href": "examples.html#march-daily-trajectories",
+    "title": "Examples",
+    "section": "March Daily Trajectories",
+    "text": "March Daily Trajectories\nCompare how footfall evolves through March at different sensors, year by year. The COVID-19 impact (2020–2021) and post-recovery trend are clearly visible.\n\nimport matplotlib.pyplot as plt\nimport matplotlib.cm as cm\nimport numpy as np\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly()\ndf_march = df[df[\"date\"].dt.month == 3].copy()\ndf_march[\"day\"] = df_march[\"date\"].dt.day\n\nsensors = [\n    \"45 Queen Street\", \"210 Queen Street\", \"297 Queen Street\",\n    \"107 Quay Street\", \"2 High Street\", \"150 K Road\",\n    \"183 K Road\", \"Commerce Street West\", \"19 Shortland Street\",\n]\nyears = sorted(df_march[\"year\"].unique())\ncolours = cm.viridis(np.linspace(0, 1, len(years)))\n\nfig, axes = plt.subplots(3, 3, figsize=(14, 10), sharex=True)\nfor ax, sensor in zip(axes.flat, sensors):\n    for yr, colour in zip(years, colours):\n        sub = df_march[df_march[\"year\"] == yr]\n        daily = sub.groupby(\"day\")[sensor].sum()\n        ax.plot(daily.index, daily.values, label=str(yr),\n                color=colour, linewidth=1.2)\n    ax.set_title(sensor, fontsize=10)\n    ax.set_xlabel(\"Day of March\")\n    ax.set_ylabel(\"Daily Footfall\")\n\nhandles, labels = axes[0, 0].get_legend_handles_labels()\nfig.legend(handles, labels, loc=\"upper center\", ncol=len(years),\n           title=\"Year\", fontsize=9)\nplt.tight_layout(rect=[0, 0, 1, 0.95])\nplt.savefig(\"march_trajectories.png\", dpi=300)\n\n\n\n\nMarch Trajectories",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "examples.html#hourly-heatmap-by-day-of-week",
+    "href": "examples.html#hourly-heatmap-by-day-of-week",
+    "title": "Examples",
+    "section": "Hourly Heatmap by Day of Week",
+    "text": "Hourly Heatmap by Day of Week\nReveals the weekly rhythm of the CBD — weekday lunchtime peaks, quiet weekend mornings, and Friday/Saturday evening activity.\n\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport pandas as pd\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly(dropna=True)\n\n# Extract start hour from \"6:00-6:59\" format\ndf[\"start_hour\"] = df[\"hour\"].str.split(\":\").str[0].astype(int)\ndf[\"dow\"] = df[\"date\"].dt.dayofweek\n\nsensor_cols = [c for c in df.columns if c not in\n               (\"date\", \"hour\", \"year\", \"start_hour\", \"dow\")]\n\n# Mean footfall across all sensors\ndf[\"mean_count\"] = df[sensor_cols].mean(axis=1)\n\npivot = df.pivot_table(\n    values=\"mean_count\", index=\"start_hour\", columns=\"dow\",\n    aggfunc=\"mean\"\n)\npivot.columns = [\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]\n\nfig, ax = plt.subplots(figsize=(10, 8))\nsns.heatmap(pivot, annot=True, fmt=\".0f\", cmap=\"YlOrRd\",\n            cbar_kws={\"label\": \"Mean Pedestrian Count\"}, ax=ax)\nax.set_title(\"Average Hourly Pedestrian Footfall by Day of Week\\n\"\n             \"(Auckland CBD, 2019–2025)\")\nax.set_ylabel(\"Hour of Day\")\nax.set_xlabel(\"Day of Week\")\nplt.tight_layout()\nplt.savefig(\"heatmap_hour_dow.png\", dpi=300)\n\n\n\n\nHeatmap",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "examples.html#abovebelow-average-footfall",
+    "href": "examples.html#abovebelow-average-footfall",
+    "title": "Examples",
+    "section": "Above/Below Average Footfall",
+    "text": "Above/Below Average Footfall\nIdentifies which streets consistently attract more or fewer pedestrians than the city-wide average.\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\n\ntotals = df[sensor_cols].sum().sort_values()\navg = totals.mean()\ndeviation = totals - avg\n\ncolours = [\"#2ecc71\" if v &gt; 0 else \"#e74c3c\" for v in deviation]\n\nfig, ax = plt.subplots(figsize=(10, 8))\nax.barh(deviation.index, deviation.values, color=colours)\nax.axvline(0, color=\"black\", linestyle=\"--\", linewidth=0.8)\nax.set_xlabel(\"Deviation from Average Footfall\")\nax.set_title(\"Sensor Footfall Relative to Average\\n\"\n             \"(Auckland CBD, 2019–2025)\")\nplt.tight_layout()\nplt.savefig(\"above_below_average.png\", dpi=300)\n\n\n\n\nAbove Below Average",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "examples.html#interactive-sensor-map",
+    "href": "examples.html#interactive-sensor-map",
+    "title": "Examples",
+    "section": "Interactive Sensor Map",
+    "text": "Interactive Sensor Map\nCreate an interactive map showing all 21 sensor locations with circle markers sized by total footfall.\n\nimport folium\nfrom akl_ped_counts import load_hourly, load_locations\n\nlocs = load_locations()\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\ntotals = df[sensor_cols].sum()\n\ncentre = [locs[\"Latitude\"].mean(), locs[\"Longitude\"].mean()]\nm = folium.Map(location=centre, zoom_start=15, tiles=\"OpenStreetMap\")\n\nmax_total = totals.max()\nfor _, row in locs.iterrows():\n    name = row[\"Address\"]\n    total = totals.get(name, 0)\n    radius = 5 + 25 * (total / max_total)\n\n    # Colour: blue (low) → red (high)\n    ratio = total / max_total\n    r = int(255 * ratio)\n    b = int(255 * (1 - ratio))\n    colour = f\"#{r:02x}00{b:02x}\"\n\n    folium.CircleMarker(\n        location=[row[\"Latitude\"], row[\"Longitude\"]],\n        radius=radius,\n        color=colour, fill=True, fill_color=colour, fill_opacity=0.7,\n        popup=f\"&lt;b&gt;{name}&lt;/b&gt;&lt;br&gt;Total: {total:,.0f}\",\n        tooltip=name,\n    ).add_to(m)\n\nm.save(\"sensor_map.html\")\n\nOpen sensor_map.html in a browser to explore interactively.\nTop 5 busiest sensors:\n\n45 Queen Street (40.0M)\n30 Queen Street (38.8M)\n210 Queen Street (37.7M)\n261 Queen Street (34.5M)\n297 Queen Street (24.7M)",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "examples.html#polars-example-march-daily-totals",
+    "href": "examples.html#polars-example-march-daily-totals",
+    "title": "Examples",
+    "section": "Polars Example: March Daily Totals",
+    "text": "Polars Example: March Daily Totals\nUsing Polars for efficient computation:\n\nimport polars as pl\nfrom akl_ped_counts.polars_loader import scan_hourly\n\nmarch = (\n    scan_hourly()\n    .filter(pl.col(\"date\").dt.month() == 3)\n    .with_columns(pl.col(\"date\").dt.day().alias(\"day\"))\n    .group_by([\"year\", \"day\"])\n    .agg(pl.col(\"45 Queen Street\").sum())\n    .sort([\"year\", \"day\"])\n    .collect()\n)\nprint(march.head(10))",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "visualizations.html",
+    "href": "visualizations.html",
+    "title": "Visualization Gallery",
+    "section": "",
+    "text": "This page showcases various ways to visualize the pedestrian count data.",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "visualizations.html#time-series-analysis",
+    "href": "visualizations.html#time-series-analysis",
+    "title": "Visualization Gallery",
+    "section": "Time Series Analysis",
+    "text": "Time Series Analysis\n\nDaily Trends for a Single Sensor\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_daily\n\ndaily = load_daily(years=[2024])\n\nplt.figure(figsize=(12, 6))\nplt.plot(daily[\"date\"], daily[\"45 Queen Street\"])\nplt.title(\"Daily Pedestrian Counts - 45 Queen Street (2024)\")\nplt.xlabel(\"Date\")\nplt.ylabel(\"Daily Count\")\nplt.xticks(rotation=45)\nplt.tight_layout()\nplt.show()\n\n\n\nComparing Multiple Locations\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_monthly\n\nmonthly = load_monthly()\nsensors = [\"45 Queen Street\", \"210 Queen Street\", \"297 Queen Street\"]\n\nplt.figure(figsize=(12, 6))\nfor sensor in sensors:\n    plt.plot(monthly[\"year\"].astype(str) + \"-\" + monthly[\"month\"].astype(str),\n             monthly[sensor], label=sensor, marker='o')\nplt.title(\"Monthly Pedestrian Counts - Top 3 Locations\")\nplt.xlabel(\"Year-Month\")\nplt.ylabel(\"Monthly Count\")\nplt.legend()\nplt.xticks(rotation=90)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "visualizations.html#heatmaps",
+    "href": "visualizations.html#heatmaps",
+    "title": "Visualization Gallery",
+    "section": "Heatmaps",
+    "text": "Heatmaps\n\nWeekly Patterns\n\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly(dropna=True)\ndf[\"start_hour\"] = df[\"hour\"].str.split(\":\").str[0].astype(int)\ndf[\"dow\"] = df[\"date\"].dt.dayofweek\n\n# Focus on one sensor\npivot = df.pivot_table(\n    values=\"45 Queen Street\",\n    index=\"start_hour\",\n    columns=\"dow\",\n    aggfunc=\"mean\"\n)\npivot.columns = [\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]\n\nplt.figure(figsize=(10, 8))\nsns.heatmap(pivot, annot=True, fmt=\".0f\", cmap=\"Blues\")\nplt.title(\"45 Queen Street - Average Hourly Footfall by Day\")\nplt.ylabel(\"Hour of Day\")\nplt.xlabel(\"Day of Week\")\nplt.tight_layout()\nplt.show()\n\n\n\nSeasonal Patterns\n\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom akl_ped_counts import load_monthly\n\nmonthly = load_monthly()\n\n# Focus on one sensor\npivot = monthly.pivot_table(\n    values=\"45 Queen Street\",\n    index=\"month\",\n    columns=\"year\",\n    aggfunc=\"sum\"\n)\n\nplt.figure(figsize=(10, 6))\nsns.heatmap(pivot, annot=True, fmt=\".0f\", cmap=\"YlOrRd\")\nplt.title(\"45 Queen Street - Monthly Totals by Year\")\nplt.ylabel(\"Month\")\nplt.xlabel(\"Year\")\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "visualizations.html#comparative-analysis",
+    "href": "visualizations.html#comparative-analysis",
+    "title": "Visualization Gallery",
+    "section": "Comparative Analysis",
+    "text": "Comparative Analysis\n\nTop vs Bottom Performers\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\n\ntotals = df[sensor_cols].sum().sort_values()\n\n# Top 5 and bottom 5\ntop5 = totals.tail(5)\nbottom5 = totals.head(5)\n\nfig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))\n\n# Top 5\nax1.barh(top5.index, top5.values, color='green')\nax1.set_title(\"Top 5 Busiest Sensors\")\nax1.set_xlabel(\"Total Count\")\n\n# Bottom 5\nax2.barh(bottom5.index, bottom5.values, color='red')\nax2.set_title(\"5 Quietest Sensors\")\nax2.set_xlabel(\"Total Count\")\n\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "visualizations.html#geographic-visualization",
+    "href": "visualizations.html#geographic-visualization",
+    "title": "Visualization Gallery",
+    "section": "Geographic Visualization",
+    "text": "Geographic Visualization\n\nSimple Scatter Plot\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_hourly, load_locations\n\nlocs = load_locations()\ndf = load_hourly()\nsensor_cols = [c for c in df.columns if c not in (\"date\", \"hour\", \"year\")]\ntotals = df[sensor_cols].sum()\n\n# Merge location data\nlocs[\"total\"] = locs[\"Address\"].map(totals)\n\nplt.figure(figsize=(10, 8))\nplt.scatter(locs[\"Longitude\"], locs[\"Latitude\"],\n            s=locs[\"total\"]/10000, alpha=0.6, c=locs[\"total\"],\n            cmap='YlOrRd')\nplt.colorbar(label=\"Total Count\")\nplt.xlabel(\"Longitude\")\nplt.ylabel(\"Latitude\")\nplt.title(\"Sensor Locations by Total Footfall\")\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "visualizations.html#statistical-distributions",
+    "href": "visualizations.html#statistical-distributions",
+    "title": "Visualization Gallery",
+    "section": "Statistical Distributions",
+    "text": "Statistical Distributions\n\nDistribution of Hourly Counts\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly()\n\nplt.figure(figsize=(12, 6))\nplt.hist(df[\"45 Queen Street\"].dropna(), bins=50, edgecolor='black')\nplt.xlabel(\"Hourly Count\")\nplt.ylabel(\"Frequency\")\nplt.title(\"Distribution of Hourly Counts - 45 Queen Street\")\nplt.tight_layout()\nplt.show()\n\n\n\nBox Plots by Year\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_hourly\n\ndf = load_hourly()\n\nfig, ax = plt.subplots(figsize=(12, 6))\ndf.boxplot(column=\"45 Queen Street\", by=\"year\", ax=ax)\nplt.xlabel(\"Year\")\nplt.ylabel(\"Hourly Count\")\nplt.title(\"45 Queen Street - Hourly Count Distribution by Year\")\nplt.suptitle(\"\")  # Remove default title\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "visualizations.html#covid-19-impact-analysis",
+    "href": "visualizations.html#covid-19-impact-analysis",
+    "title": "Visualization Gallery",
+    "section": "COVID-19 Impact Analysis",
+    "text": "COVID-19 Impact Analysis\n\nYear-over-Year Comparison\n\nimport matplotlib.pyplot as plt\nfrom akl_ped_counts import load_monthly\n\nmonthly = load_monthly()\nsensor = \"45 Queen Street\"\n\nfig, ax = plt.subplots(figsize=(12, 6))\nfor year in monthly[\"year\"].unique():\n    year_data = monthly[monthly[\"year\"] == year]\n    ax.plot(year_data[\"month\"], year_data[sensor], label=str(year), marker='o')\n\nplt.xlabel(\"Month\")\nplt.ylabel(\"Monthly Count\")\nplt.title(f\"{sensor} - Monthly Counts by Year (COVID-19 Impact)\")\nplt.legend()\nplt.grid(True, alpha=0.3)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "visualizations.html#next-steps",
+    "href": "visualizations.html#next-steps",
+    "title": "Visualization Gallery",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nExamples - Code examples for common tasks\nAPI Reference - Complete function documentation\nData Coverage - Understanding the dataset",
+    "crumbs": [
+      "Home",
+      "Examples",
+      "Visualization Gallery"
+    ]
+  },
+  {
+    "objectID": "data-coverage.html",
+    "href": "data-coverage.html",
+    "title": "Data Coverage",
+    "section": "",
+    "text": "The dataset contains 61,367 hourly observations across 21 sensor locations from 2019 to 2025.",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Data Coverage"
+    ]
+  },
+  {
+    "objectID": "data-coverage.html#overview",
+    "href": "data-coverage.html#overview",
+    "title": "Data Coverage",
+    "section": "",
+    "text": "The dataset contains 61,367 hourly observations across 21 sensor locations from 2019 to 2025.",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Data Coverage"
+    ]
+  },
+  {
+    "objectID": "data-coverage.html#coverage-by-year",
+    "href": "data-coverage.html#coverage-by-year",
+    "title": "Data Coverage",
+    "section": "Coverage by Year",
+    "text": "Coverage by Year\n\n\n\n\n\n\n\n\n\n\nYear\nRows\nSensors\nMissing (%)\nNotes\n\n\n\n\n2019\n8,760\n19\n0.0\nComplete\n\n\n2020\n8,784\n19\n0.0\nComplete (leap year)\n\n\n2021\n8,760\n19\n0.0\nComplete\n\n\n2022\n8,760\n21\n8.2\nTwo new sensors added; startup gaps\n\n\n2023\n8,760\n21\n0.1\nNear-complete\n\n\n2024\n8,783\n21\n0.0\nComplete (leap year + DST adjustments)\n\n\n2025\n8,760\n21\n0.0\nCamera upgrades on 5 Mar for 5 sensors",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Data Coverage"
+    ]
+  },
+  {
+    "objectID": "data-coverage.html#sensor-locations",
+    "href": "data-coverage.html#sensor-locations",
+    "title": "Data Coverage",
+    "section": "Sensor Locations",
+    "text": "Sensor Locations\nThe 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karangahape Road in the south.\n\nWaterfront\n\n107 Quay Street\n188 Quay Street Lower Albert (EW)\n188 Quay Street Lower Albert (NS)\nTe Ara Tahuhu Walkway\n\n\n\nLower Queen Street\n\nCommerce Street West\n7 Custom Street East\n45 Queen Street\n30 Queen Street\n\n\n\nMid-city\n\n19 Shortland Street\n2 High Street\n1 Courthouse Lane\n61 Federal Street\n59 High Street\n\n\n\nUpper Queen Street\n\n210 Queen Street\n205 Queen Street\n8 Darby Street (EW)\n8 Darby Street (NS)\n261 Queen Street\n297 Queen Street\n\n\n\nKarangahape Road\n\n150 K Road\n183 K Road",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Data Coverage"
+    ]
+  },
+  {
+    "objectID": "data-coverage.html#sensor-changes",
+    "href": "data-coverage.html#sensor-changes",
+    "title": "Data Coverage",
+    "section": "Sensor Changes",
+    "text": "Sensor Changes\n\n2022 Additions\nTwo new sensors were added in 2022:\n\n188 Quay Street Lower Albert (EW)\n188 Quay Street Lower Albert (NS)\n\nThese sensors have NaN values for 2019-2021. See Missing Data for how to handle this.\n\n\n2025 Camera Upgrades\nOn 5 March 2025, five sensors were upgraded to wider recording zones:\n\n30 Queen Street\n205 Queen Street\n210 Queen Street\n261 Queen Street\n297 Queen Street\n\nCounts from these sensors may show a step-change from this date. Heart of the City captures the additional area separately — contact them for disaggregated data.",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Data Coverage"
+    ]
+  },
+  {
+    "objectID": "data-coverage.html#data-quality",
+    "href": "data-coverage.html#data-quality",
+    "title": "Data Coverage",
+    "section": "Data Quality",
+    "text": "Data Quality\n\nCompleteness\n\n2019-2021: 100% complete for 19 sensors\n2022: 91.8% complete (startup gaps for new sensors)\n2023: 99.9% complete\n2024-2025: 100% complete\n\n\n\nMissing Data Patterns\nMissing values arise from three sources:\n\nSensors not yet installed (structural missingness)\nSensor downtime/maintenance (temporary gaps)\nData transmission failures (rare, short gaps)\n\nSee Missing Data for detailed analysis and handling strategies.",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Data Coverage"
+    ]
+  },
+  {
+    "objectID": "data-coverage.html#inspect-coverage",
+    "href": "data-coverage.html#inspect-coverage",
+    "title": "Data Coverage",
+    "section": "Inspect Coverage",
+    "text": "Inspect Coverage\nUse describe_missing() to get a detailed report:\n\nfrom akl_ped_counts import describe_missing\n\nreport = describe_missing()\n\n# Sensors with &gt;1% missing data\nprint(report.query(\"pct_missing &gt; 1\"))\n\n# Summary by year\nprint(report.groupby(\"year\")[\"pct_missing\"].mean())",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "Data Coverage"
+    ]
+  },
+  {
+    "objectID": "api-reference.html",
+    "href": "api-reference.html",
+    "title": "API Reference",
+    "section": "",
+    "text": "All functions return pandas DataFrames.\n\n\nLoad hourly pedestrian counts.\nParameters:\n\nyears (list of int, optional): Filter to specific years (e.g., [2022, 2023])\nsensors (list of str, optional): Filter to specific sensor locations\ndropna (bool, default False): If True, drop rows with any missing values\n\nReturns: pd.DataFrame with columns date, hour, year, plus one column per sensor\nExample:\n\nfrom akl_ped_counts import load_hourly\n\n# All data\ndf = load_hourly()\n\n# Filter by year\ndf_2024 = load_hourly(years=[2024])\n\n# Specific sensors\ndf = load_hourly(sensors=[\"45 Queen Street\", \"210 Queen Street\"])\n\n# Clean data only\ndf_clean = load_hourly(dropna=True)\n\n\n\n\nLoad daily pedestrian totals (aggregated from hourly data).\nParameters: Same as load_hourly()\nReturns: pd.DataFrame with columns date, year, plus one column per sensor (daily total)\nExample:\n\nfrom akl_ped_counts import load_daily\n\ndaily = load_daily(years=[2023, 2024])\n\n\n\n\nLoad monthly pedestrian totals.\nParameters: Same as load_hourly()\nReturns: pd.DataFrame with columns year_month (Period), year, month, plus one column per sensor\nExample:\n\nfrom akl_ped_counts import load_monthly\n\nmonthly = load_monthly()\n\n\n\n\nLoad sensor location metadata.\nReturns: pd.DataFrame with columns Address, Latitude, Longitude (WGS 84)\nExample:\n\nfrom akl_ped_counts import load_locations\n\nlocs = load_locations()\nprint(locs.head())\n\n\n\n\nGet the list of all 21 sensor location names.\nReturns: list of str\nExample:\n\nfrom akl_ped_counts import list_sensors\n\nsensors = list_sensors()\nprint(f\"Total sensors: {len(sensors)}\")\n\n\n\n\nGet a summary of missing data by year and sensor.\nReturns: pd.DataFrame with columns year, sensor, total_hours, missing_hours, pct_missing\nExample:\n\nfrom akl_ped_counts import describe_missing\n\nreport = describe_missing()\nprint(report.query(\"pct_missing &gt; 1\"))",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "API Reference"
+    ]
+  },
+  {
+    "objectID": "api-reference.html#pandas-api",
+    "href": "api-reference.html#pandas-api",
+    "title": "API Reference",
+    "section": "",
+    "text": "All functions return pandas DataFrames.\n\n\nLoad hourly pedestrian counts.\nParameters:\n\nyears (list of int, optional): Filter to specific years (e.g., [2022, 2023])\nsensors (list of str, optional): Filter to specific sensor locations\ndropna (bool, default False): If True, drop rows with any missing values\n\nReturns: pd.DataFrame with columns date, hour, year, plus one column per sensor\nExample:\n\nfrom akl_ped_counts import load_hourly\n\n# All data\ndf = load_hourly()\n\n# Filter by year\ndf_2024 = load_hourly(years=[2024])\n\n# Specific sensors\ndf = load_hourly(sensors=[\"45 Queen Street\", \"210 Queen Street\"])\n\n# Clean data only\ndf_clean = load_hourly(dropna=True)\n\n\n\n\nLoad daily pedestrian totals (aggregated from hourly data).\nParameters: Same as load_hourly()\nReturns: pd.DataFrame with columns date, year, plus one column per sensor (daily total)\nExample:\n\nfrom akl_ped_counts import load_daily\n\ndaily = load_daily(years=[2023, 2024])\n\n\n\n\nLoad monthly pedestrian totals.\nParameters: Same as load_hourly()\nReturns: pd.DataFrame with columns year_month (Period), year, month, plus one column per sensor\nExample:\n\nfrom akl_ped_counts import load_monthly\n\nmonthly = load_monthly()\n\n\n\n\nLoad sensor location metadata.\nReturns: pd.DataFrame with columns Address, Latitude, Longitude (WGS 84)\nExample:\n\nfrom akl_ped_counts import load_locations\n\nlocs = load_locations()\nprint(locs.head())\n\n\n\n\nGet the list of all 21 sensor location names.\nReturns: list of str\nExample:\n\nfrom akl_ped_counts import list_sensors\n\nsensors = list_sensors()\nprint(f\"Total sensors: {len(sensors)}\")\n\n\n\n\nGet a summary of missing data by year and sensor.\nReturns: pd.DataFrame with columns year, sensor, total_hours, missing_hours, pct_missing\nExample:\n\nfrom akl_ped_counts import describe_missing\n\nreport = describe_missing()\nprint(report.query(\"pct_missing &gt; 1\"))",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "API Reference"
+    ]
+  },
+  {
+    "objectID": "api-reference.html#polars-api",
+    "href": "api-reference.html#polars-api",
+    "title": "API Reference",
+    "section": "Polars API",
+    "text": "Polars API\nAll functions in akl_ped_counts.polars_loader mirror the pandas API but return Polars DataFrames.\n\nload_hourly(years=None, sensors=None, dropna=False)\nLoad hourly counts as a Polars DataFrame.\nExample:\n\nfrom akl_ped_counts.polars_loader import load_hourly\n\ndf = load_hourly(years=[2023, 2024])\nprint(df.shape)\n\n\n\nscan_hourly(years=None, sensors=None)\nReturn a Polars LazyFrame for deferred execution.\nParameters:\n\nyears (list of int, optional): Filter to specific years\nsensors (list of str, optional): Filter to specific sensors\n\nReturns: pl.LazyFrame\nExample:\n\nfrom akl_ped_counts.polars_loader import scan_hourly\nimport polars as pl\n\nlf = scan_hourly(years=[2024])\ndaily = (\n    lf.group_by(\"date\")\n    .agg(pl.col(\"45 Queen Street\").sum())\n    .sort(\"date\")\n    .collect()\n)\n\n\n\nload_daily(), load_monthly(), load_locations(), describe_missing()\nSame signatures as pandas versions, but return pl.DataFrame.\nExample:\n\nfrom akl_ped_counts.polars_loader import load_daily, load_locations\n\ndaily = load_daily(years=[2024], dropna=True)\nlocs = load_locations()",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "API Reference"
+    ]
+  },
+  {
+    "objectID": "api-reference.html#constants",
+    "href": "api-reference.html#constants",
+    "title": "API Reference",
+    "section": "Constants",
+    "text": "Constants\n\nSENSORS\nList of all 21 sensor location names.\n\nfrom akl_ped_counts import SENSORS\n\nprint(SENSORS)\n\n\n\nSENSORS_ADDED_2022\nList of sensors added in 2022 (not available for 2019-2021).\n\nfrom akl_ped_counts import SENSORS_ADDED_2022\n\nprint(SENSORS_ADDED_2022)\n# ['188 Quay Street Lower Albert (EW)', '188 Quay Street Lower Albert (NS)']",
+    "crumbs": [
+      "Home",
+      "Documentation",
+      "API Reference"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Overview",
+    "text": "Overview\nakl-ped-counts provides easy access to hourly pedestrian count data from Heart of the City Auckland’s pedestrian monitoring system.\nThe dataset covers:\n\n21 sensor locations across Auckland CBD\n7 years of data (2019-2025)\n61,000+ hourly observations\nGeographic coordinates for mapping",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  },
+  {
+    "objectID": "index.html#quick-example",
+    "href": "index.html#quick-example",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Quick Example",
+    "text": "Quick Example\n\nfrom akl_ped_counts import load_hourly, load_locations\n\n# Load hourly counts\ncounts = load_hourly(years=[2024])\n\n# Load sensor locations\nlocations = load_locations()\n\nprint(f\"Loaded {len(counts):,} hourly observations\")\nprint(f\"Across {len(locations)} sensor locations\")",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  },
+  {
+    "objectID": "index.html#key-features",
+    "href": "index.html#key-features",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Key Features",
+    "text": "Key Features\n\n\n📊 Multiple Formats\n\nPandas DataFrames\nPolars DataFrames\nLazyFrame support\n\n\n\n🎯 Easy Filtering\n\nFilter by year\nFilter by sensor\nHandle missing data\n\n\n\n📈 Ready for Analysis\n\nPre-cleaned data\nGeographic coordinates\nMultiple aggregation levels\n\n\n\n🗺️ Visualization Ready\n\nPlot examples included\nInteractive mapping support\nHeatmaps and time series",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Installation",
+    "text": "Installation\nInstall via pip:\n# Core package (pandas only)\npip install akl-ped-counts\n\n# With all extras (Polars, plotting, mapping)\npip install \"akl-ped-counts[all]\"\nSee Getting Started for detailed installation options.",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  },
+  {
+    "objectID": "index.html#sensor-coverage",
+    "href": "index.html#sensor-coverage",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Sensor Coverage",
+    "text": "Sensor Coverage\nThe 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karangahape Road in the south:\n\nWaterfront: Quay Street locations, Te Ara Tahuhu Walkway\nLower Queen Street: Commerce St, Custom St, Queen St (30-45)\nMid-city: Shortland St, High St, Courthouse Lane, Federal St\nUpper Queen Street: Queen St (205-297), Darby St\nKarangahape Road: K Road (150, 183)",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  },
+  {
+    "objectID": "index.html#data-source",
+    "href": "index.html#data-source",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Data Source",
+    "text": "Data Source\nData collected by Heart of the City Auckland using automated pedestrian counting cameras. The system records movements (not images), so no individual information is collected.\nLicensed under Creative Commons Attribution 4.0 International (CC BY 4.0).",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  },
+  {
+    "objectID": "index.html#citation",
+    "href": "index.html#citation",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Citation",
+    "text": "Citation\nIf you use this data in research, please cite:\nHeart of the City Auckland. Pedestrian Monitoring System Data (2019–2025).\nhttps://www.hotcity.co.nz/pedestrian-counts",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  },
+  {
+    "objectID": "index.html#next-steps",
+    "href": "index.html#next-steps",
+    "title": "Auckland Pedestrian Counts",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nGetting Started - Installation and quick start\nAPI Reference - Complete function documentation\nExamples - Visualization examples and use cases",
+    "crumbs": [
+      "Home",
+      "Overview",
+      "Auckland Pedestrian Counts"
+    ]
+  }
+]

@@ -8,126 +8,23 @@ Hourly pedestrian count data from [Heart of the City Auckland](https://www.hotci
 
 ---
 
-## Building and publishing with uv
-
-### Prerequisites
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if you haven't already:
-
-```bash
-# macOS / Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Windows
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-You will also need accounts on both [TestPyPI](https://test.pypi.org/account/register/) and [PyPI](https://pypi.org/account/register/), each with an API token generated from **Account Settings → API tokens**.
-
-### Step 1: Build the package
-
-```bash
-cd akl-ped-counts
-uv build
-```
-
-This creates two files in `dist/`:
-
-```
-dist/
-├── akl_ped_counts-0.1.0-py3-none-any.whl
-└── akl_ped_counts-0.1.0.tar.gz
-```
-
-### Step 2: Publish to TestPyPI
-
-Always test on [TestPyPI](https://test.pypi.org/) first:
-
-```bash
-uv publish --publish-url https://test.pypi.org/legacy/
-```
-
-uv will prompt for your credentials. Use `__token__` as the username and paste your TestPyPI API token as the password. Alternatively, set the token via an environment variable:
-
-```bash
-export UV_PUBLISH_TOKEN=pypi-AgEI...   # your TestPyPI token
-uv publish --publish-url https://test.pypi.org/legacy/
-```
-
-### Step 3: Verify the TestPyPI install
-
-```bash
-# Create a throwaway venv and install from TestPyPI
-uv venv /tmp/test-install
-source /tmp/test-install/bin/activate
-
-# --extra-index-url ensures pandas is pulled from real PyPI
-uv pip install \
-  --index-url https://test.pypi.org/simple/ \
-  --extra-index-url https://pypi.org/simple/ \
-  akl-ped-counts
-
-# Smoke test
-python -c "
-from akl_ped_counts import load_hourly, load_locations, list_sensors
-print('Sensors:', len(list_sensors()))
-print('Hourly shape:', load_hourly().shape)
-print('Locations shape:', load_locations().shape)
-"
-
-deactivate
-```
-
-Expected output:
-
-```
-Sensors: 21
-Hourly shape: (61367, 24)
-Locations shape: (21, 3)
-```
-
-### Step 4: Publish to PyPI
-
-Once the TestPyPI install looks good:
-
-```bash
-export UV_PUBLISH_TOKEN=pypi-AgEI...   # your real PyPI token
-uv publish
-```
-
-### Version bumps
-
-To release a new version, update the version string in **two places**:
-
-1. `pyproject.toml` → `version = "0.2.0"`
-2. `src/akl_ped_counts/__init__.py` → `__version__ = "0.2.0"`
-
-Then rebuild and publish:
-
-```bash
-uv build
-uv publish
-```
-
----
-
-## Installation (for users)
+## Installation
 
 ```bash
 # Core (pandas only)
-uv add akl-ped-counts        # or: pip install akl-ped-counts
+pip install akl-ped-counts
 
 # With Polars support
-uv add "akl-ped-counts[polars]"
+pip install "akl-ped-counts[polars]"
 
 # With plotting (matplotlib + seaborn)
-uv add "akl-ped-counts[plot]"
+pip install "akl-ped-counts[plot]"
 
 # With mapping (folium)
-uv add "akl-ped-counts[geo]"
+pip install "akl-ped-counts[geo]"
 
 # Everything
-uv add "akl-ped-counts[all]"
+pip install "akl-ped-counts[all]"
 ```
 
 ## Quick start
@@ -202,7 +99,7 @@ print(report.query("pct_missing > 1"))
 
 ## API reference — Polars
 
-All Polars functions live in `akl_ped_counts.polars_loader` and mirror the pandas API. Polars must be installed (`pip install polars` or `uv add polars`).
+All Polars functions live in `akl_ped_counts.polars_loader` and mirror the pandas API. Polars must be installed (`pip install polars`).
 
 ### `load_hourly(years=None, sensors=None, dropna=False)`
 
@@ -242,29 +139,9 @@ daily = load_daily(years=[2024], dropna=True)
 locs = load_locations()
 ```
 
-### Polars example: March daily totals across years
-
-```python
-import polars as pl
-from akl_ped_counts.polars_loader import scan_hourly
-
-march = (
-    scan_hourly()
-    .filter(pl.col("date").dt.month() == 3)
-    .with_columns(pl.col("date").dt.day().alias("day"))
-    .group_by(["year", "day"])
-    .agg(pl.col("45 Queen Street").sum())
-    .sort(["year", "day"])
-    .collect()
-)
-print(march.head(10))
-```
-
 ---
 
 ## Visualisation examples
-
-Install plotting dependencies: `pip install matplotlib seaborn folium` (or `uv add "akl-ped-counts[all]"`).
 
 ### March daily trajectories by year
 
@@ -452,20 +329,6 @@ original = [c for c in df.columns
 df_uniform = df[["date", "hour", "year"] + original]
 ```
 
-Polars equivalent:
-
-```python
-import polars as pl
-from akl_ped_counts.polars_loader import load_hourly
-from akl_ped_counts import SENSORS_ADDED_2022
-
-df = load_hourly()
-keep = [c for c in df.columns
-        if c not in ("date", "hour", "year")
-        and c not in SENSORS_ADDED_2022]
-df_uniform = df.select(["date", "hour", "year"] + keep)
-```
-
 ### Sensor-level gaps
 
 **107 Quay Street** has the highest non-structural missingness (~5.6% overall), concentrated in 2022 during extended sensor maintenance. **150 K Road** has a minor gap (~1.6%) in 2023.
@@ -477,7 +340,6 @@ df_uniform = df.select(["date", "hour", "year"] + keep)
 ```python
 # pandas
 df = load_hourly(dropna=True)
-# or: df = load_hourly().dropna()
 
 # polars
 from akl_ped_counts.polars_loader import load_hourly as pl_load
@@ -534,40 +396,6 @@ Data collected by [Heart of the City Auckland](https://www.hotcity.co.nz/) using
 
 Licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
-## Package structure
-
-```
-akl-ped-counts/
-├── pyproject.toml                      # Build config (hatchling backend, compatible with uv)
-├── README.md
-├── LICENSE
-├── examples/                           # Visualisation scripts and outputs
-│   ├── march_trajectories.py
-│   ├── march_trajectories.png
-│   ├── heatmap_hour_dow.png
-│   ├── above_below_average.png
-│   └── sensor_map.html
-└── src/akl_ped_counts/
-    ├── __init__.py                     # Public API and version
-    ├── loader.py                       # Pandas data loading functions
-    ├── polars_loader.py                # Polars data loading functions
-    ├── py.typed                        # PEP 561 marker
-    └── data/
-        ├── hourly_counts.csv           # 61,367 rows × 24 columns (~8 MB)
-        ├── locations.csv               # 21 sensors with lat/lon
-        └── missing_data_report.json    # Per-year/sensor missing data summary
-```
-
-## Data cleaning applied
-
-The raw Excel files from Heart of the City required several cleaning steps before bundling:
-
-- **Date corrections**: Feb 4 and Feb 15 were mislabelled as 2017 in the 2019–2021 files; corrected to their respective years.
-- **Spelling fix**: "59 High Stret" → "59 High Street".
-- **2025 header skip**: Three metadata rows about camera upgrades were removed.
-- **Non-data rows dropped**: Monthly summary rows embedded in some Excel files were excluded.
-- **Numeric standardisation**: All sensor counts stored as float64 to preserve `NaN` for missing values.
-
 ## Citation
 
 If you use this data in research, please cite:
@@ -576,3 +404,7 @@ If you use this data in research, please cite:
 Heart of the City Auckland. Pedestrian Monitoring System Data (2019–2025).
 https://www.hotcity.co.nz/pedestrian-counts
 ```
+
+## Contributing
+
+For package maintainers and contributors, see [CONTRIBUTING.md](CONTRIBUTING.md) for build and publishing instructions.

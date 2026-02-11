@@ -1,0 +1,114 @@
+---
+title: "Auckland Pedestrian Counts"
+subtitle: "Hourly pedestrian count data from Auckland CBD (2019-2025)"
+---
+
+[![PyPI version](https://img.shields.io/pypi/v/akl-ped-counts)](https://pypi.org/project/akl-ped-counts/)
+[![Python](https://img.shields.io/pypi/pyversions/akl-ped-counts)](https://pypi.org/project/akl-ped-counts/)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+
+## Overview
+
+**akl-ped-counts** provides easy access to hourly pedestrian count data from [Heart of the City Auckland](https://www.hotcity.co.nz/pedestrian-counts)'s pedestrian monitoring system.
+
+The dataset covers:
+
+- **21 sensor locations** across Auckland CBD
+- **7 years** of data (2019-2025)
+- **61,000+ hourly observations**
+- Geographic coordinates for mapping
+
+## Quick Example
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly, load_locations
+
+# Load hourly counts
+counts = load_hourly(years=[2024])
+
+# Load sensor locations
+locations = load_locations()
+
+print(f"Loaded {len(counts):,} hourly observations")
+print(f"Across {len(locations)} sensor locations")
+```
+
+## Key Features
+
+::: {.grid}
+
+::: {.g-col-6}
+### 📊 Multiple Formats
+- Pandas DataFrames
+- Polars DataFrames
+- LazyFrame support
+:::
+
+::: {.g-col-6}
+### 🎯 Easy Filtering
+- Filter by year
+- Filter by sensor
+- Handle missing data
+:::
+
+::: {.g-col-6}
+### 📈 Ready for Analysis
+- Pre-cleaned data
+- Geographic coordinates
+- Multiple aggregation levels
+:::
+
+::: {.g-col-6}
+### 🗺️ Visualization Ready
+- Plot examples included
+- Interactive mapping support
+- Heatmaps and time series
+:::
+
+:::
+
+## Installation
+
+Install via pip:
+
+```bash
+# Core package (pandas only)
+pip install akl-ped-counts
+
+# With all extras (Polars, plotting, mapping)
+pip install "akl-ped-counts[all]"
+```
+
+See [Getting Started](getting-started.qmd) for detailed installation options.
+
+## Sensor Coverage
+
+The 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karangahape Road in the south:
+
+- **Waterfront**: Quay Street locations, Te Ara Tahuhu Walkway
+- **Lower Queen Street**: Commerce St, Custom St, Queen St (30-45)
+- **Mid-city**: Shortland St, High St, Courthouse Lane, Federal St
+- **Upper Queen Street**: Queen St (205-297), Darby St
+- **Karangahape Road**: K Road (150, 183)
+
+## Data Source
+
+Data collected by [Heart of the City Auckland](https://www.hotcity.co.nz/) using automated pedestrian counting cameras. The system records movements (not images), so no individual information is collected.
+
+Licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+
+## Citation
+
+If you use this data in research, please cite:
+
+```
+Heart of the City Auckland. Pedestrian Monitoring System Data (2019–2025).
+https://www.hotcity.co.nz/pedestrian-counts
+```
+
+## Next Steps
+
+- [Getting Started](getting-started.qmd) - Installation and quick start
+- [API Reference](api-reference.qmd) - Complete function documentation
+- [Examples](examples.qmd) - Visualization examples and use cases

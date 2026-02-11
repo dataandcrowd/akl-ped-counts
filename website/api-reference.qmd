@@ -1,0 +1,204 @@
+---
+title: "API Reference"
+---
+
+## Pandas API
+
+All functions return pandas DataFrames.
+
+### `load_hourly(years=None, sensors=None, dropna=False)`
+
+Load hourly pedestrian counts.
+
+**Parameters:**
+
+- `years` (list of int, optional): Filter to specific years (e.g., `[2022, 2023]`)
+- `sensors` (list of str, optional): Filter to specific sensor locations
+- `dropna` (bool, default False): If True, drop rows with any missing values
+
+**Returns:** `pd.DataFrame` with columns `date`, `hour`, `year`, plus one column per sensor
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly
+
+# All data
+df = load_hourly()
+
+# Filter by year
+df_2024 = load_hourly(years=[2024])
+
+# Specific sensors
+df = load_hourly(sensors=["45 Queen Street", "210 Queen Street"])
+
+# Clean data only
+df_clean = load_hourly(dropna=True)
+```
+
+### `load_daily(years=None, sensors=None, dropna=False)`
+
+Load daily pedestrian totals (aggregated from hourly data).
+
+**Parameters:** Same as `load_hourly()`
+
+**Returns:** `pd.DataFrame` with columns `date`, `year`, plus one column per sensor (daily total)
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_daily
+
+daily = load_daily(years=[2023, 2024])
+```
+
+### `load_monthly(years=None, sensors=None, dropna=False)`
+
+Load monthly pedestrian totals.
+
+**Parameters:** Same as `load_hourly()`
+
+**Returns:** `pd.DataFrame` with columns `year_month` (Period), `year`, `month`, plus one column per sensor
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_monthly
+
+monthly = load_monthly()
+```
+
+### `load_locations()`
+
+Load sensor location metadata.
+
+**Returns:** `pd.DataFrame` with columns `Address`, `Latitude`, `Longitude` (WGS 84)
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_locations
+
+locs = load_locations()
+print(locs.head())
+```
+
+### `list_sensors()`
+
+Get the list of all 21 sensor location names.
+
+**Returns:** `list` of str
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts import list_sensors
+
+sensors = list_sensors()
+print(f"Total sensors: {len(sensors)}")
+```
+
+### `describe_missing()`
+
+Get a summary of missing data by year and sensor.
+
+**Returns:** `pd.DataFrame` with columns `year`, `sensor`, `total_hours`, `missing_hours`, `pct_missing`
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts import describe_missing
+
+report = describe_missing()
+print(report.query("pct_missing > 1"))
+```
+
+## Polars API
+
+All functions in `akl_ped_counts.polars_loader` mirror the pandas API but return Polars DataFrames.
+
+### `load_hourly(years=None, sensors=None, dropna=False)`
+
+Load hourly counts as a Polars DataFrame.
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts.polars_loader import load_hourly
+
+df = load_hourly(years=[2023, 2024])
+print(df.shape)
+```
+
+### `scan_hourly(years=None, sensors=None)`
+
+Return a Polars LazyFrame for deferred execution.
+
+**Parameters:**
+
+- `years` (list of int, optional): Filter to specific years
+- `sensors` (list of str, optional): Filter to specific sensors
+
+**Returns:** `pl.LazyFrame`
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts.polars_loader import scan_hourly
+import polars as pl
+
+lf = scan_hourly(years=[2024])
+daily = (
+    lf.group_by("date")
+    .agg(pl.col("45 Queen Street").sum())
+    .sort("date")
+    .collect()
+)
+```
+
+### `load_daily()`, `load_monthly()`, `load_locations()`, `describe_missing()`
+
+Same signatures as pandas versions, but return `pl.DataFrame`.
+
+**Example:**
+
+```{python}
+#| eval: false
+from akl_ped_counts.polars_loader import load_daily, load_locations
+
+daily = load_daily(years=[2024], dropna=True)
+locs = load_locations()
+```
+
+## Constants
+
+### `SENSORS`
+
+List of all 21 sensor location names.
+
+```{python}
+#| eval: false
+from akl_ped_counts import SENSORS
+
+print(SENSORS)
+```
+
+### `SENSORS_ADDED_2022`
+
+List of sensors added in 2022 (not available for 2019-2021).
+
+```{python}
+#| eval: false
+from akl_ped_counts import SENSORS_ADDED_2022
+
+print(SENSORS_ADDED_2022)
+# ['188 Quay Street Lower Albert (EW)', '188 Quay Street Lower Albert (NS)']
+```

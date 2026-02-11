@@ -1,0 +1,76 @@
+/* Custom styles for akl-ped-counts documentation */
+
+:root {
+  --primary-color: #2c3e50;
+  --accent-color: #e74c3c;
+  --code-bg: #f8f9fa;
+}
+
+/* Improve code blocks */
+pre {
+  background-color: var(--code-bg);
+  border-left: 3px solid var(--accent-color);
+  padding: 1em;
+  border-radius: 4px;
+}
+
+/* Better table styling */
+table {
+  margin: 1.5em 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75em;
+  text-align: left;
+}
+
+table td {
+  padding: 0.75em;
+  border-bottom: 1px solid #ddd;
+}
+
+table tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Grid layout improvements */
+.grid {
+  margin: 1.5em 0;
+}
+
+/* Improve headings */
+h1, h2, h3 {
+  color: var(--primary-color);
+  margin-top: 1.5em;
+}
+
+/* Badge styling */
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 0.875em;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+/* Callout boxes */
+.callout {
+  margin: 1.5em 0;
+  padding: 1em;
+  border-left: 4px solid var(--accent-color);
+  background-color: #f8f9fa;
+}
+
+.callout-title {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}

@@ -1,0 +1,113 @@
+---
+title: "Data Coverage"
+---
+
+## Overview
+
+The dataset contains **61,367 hourly observations** across **21 sensor locations** from **2019 to 2025**.
+
+## Coverage by Year
+
+| Year | Rows  | Sensors | Missing (%) | Notes                                    |
+|------|-------|---------|-------------|------------------------------------------|
+| 2019 | 8,760 | 19      | 0.0         | Complete                                 |
+| 2020 | 8,784 | 19      | 0.0         | Complete (leap year)                     |
+| 2021 | 8,760 | 19      | 0.0         | Complete                                 |
+| 2022 | 8,760 | 21      | 8.2         | Two new sensors added; startup gaps      |
+| 2023 | 8,760 | 21      | 0.1         | Near-complete                            |
+| 2024 | 8,783 | 21      | 0.0         | Complete (leap year + DST adjustments)   |
+| 2025 | 8,760 | 21      | 0.0         | Camera upgrades on 5 Mar for 5 sensors   |
+
+## Sensor Locations
+
+The 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karangahape Road in the south.
+
+### Waterfront
+- 107 Quay Street
+- 188 Quay Street Lower Albert (EW)
+- 188 Quay Street Lower Albert (NS)
+- Te Ara Tahuhu Walkway
+
+### Lower Queen Street
+- Commerce Street West
+- 7 Custom Street East
+- 45 Queen Street
+- 30 Queen Street
+
+### Mid-city
+- 19 Shortland Street
+- 2 High Street
+- 1 Courthouse Lane
+- 61 Federal Street
+- 59 High Street
+
+### Upper Queen Street
+- 210 Queen Street
+- 205 Queen Street
+- 8 Darby Street (EW)
+- 8 Darby Street (NS)
+- 261 Queen Street
+- 297 Queen Street
+
+### Karangahape Road
+- 150 K Road
+- 183 K Road
+
+## Sensor Changes
+
+### 2022 Additions
+
+Two new sensors were added in 2022:
+
+- 188 Quay Street Lower Albert (EW)
+- 188 Quay Street Lower Albert (NS)
+
+These sensors have `NaN` values for 2019-2021. See [Missing Data](missing-data.qmd) for how to handle this.
+
+### 2025 Camera Upgrades
+
+On **5 March 2025**, five sensors were upgraded to wider recording zones:
+
+- 30 Queen Street
+- 205 Queen Street
+- 210 Queen Street
+- 261 Queen Street
+- 297 Queen Street
+
+Counts from these sensors may show a step-change from this date. Heart of the City captures the additional area separately — contact them for disaggregated data.
+
+## Data Quality
+
+### Completeness
+
+- **2019-2021**: 100% complete for 19 sensors
+- **2022**: 91.8% complete (startup gaps for new sensors)
+- **2023**: 99.9% complete
+- **2024-2025**: 100% complete
+
+### Missing Data Patterns
+
+Missing values arise from three sources:
+
+1. **Sensors not yet installed** (structural missingness)
+2. **Sensor downtime/maintenance** (temporary gaps)
+3. **Data transmission failures** (rare, short gaps)
+
+See [Missing Data](missing-data.qmd) for detailed analysis and handling strategies.
+
+## Inspect Coverage
+
+Use `describe_missing()` to get a detailed report:
+
+```{python}
+#| eval: false
+from akl_ped_counts import describe_missing
+
+report = describe_missing()
+
+# Sensors with >1% missing data
+print(report.query("pct_missing > 1"))
+
+# Summary by year
+print(report.groupby("year")["pct_missing"].mean())
+```

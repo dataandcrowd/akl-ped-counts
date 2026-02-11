@@ -1,0 +1,197 @@
+---
+title: "Examples"
+---
+
+## Installation for Examples
+
+To run these examples, install the package with visualization dependencies:
+
+```bash
+pip install "akl-ped-counts[all]"
+```
+
+## March Daily Trajectories
+
+Compare how footfall evolves through March at different sensors, year by year. The COVID-19 impact (2020–2021) and post-recovery trend are clearly visible.
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import numpy as np
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+df_march = df[df["date"].dt.month == 3].copy()
+df_march["day"] = df_march["date"].dt.day
+
+sensors = [
+    "45 Queen Street", "210 Queen Street", "297 Queen Street",
+    "107 Quay Street", "2 High Street", "150 K Road",
+    "183 K Road", "Commerce Street West", "19 Shortland Street",
+]
+years = sorted(df_march["year"].unique())
+colours = cm.viridis(np.linspace(0, 1, len(years)))
+
+fig, axes = plt.subplots(3, 3, figsize=(14, 10), sharex=True)
+for ax, sensor in zip(axes.flat, sensors):
+    for yr, colour in zip(years, colours):
+        sub = df_march[df_march["year"] == yr]
+        daily = sub.groupby("day")[sensor].sum()
+        ax.plot(daily.index, daily.values, label=str(yr),
+                color=colour, linewidth=1.2)
+    ax.set_title(sensor, fontsize=10)
+    ax.set_xlabel("Day of March")
+    ax.set_ylabel("Daily Footfall")
+
+handles, labels = axes[0, 0].get_legend_handles_labels()
+fig.legend(handles, labels, loc="upper center", ncol=len(years),
+           title="Year", fontsize=9)
+plt.tight_layout(rect=[0, 0, 1, 0.95])
+plt.savefig("march_trajectories.png", dpi=300)
+```
+
+![March Trajectories](../examples/march_trajectories.png)
+
+## Hourly Heatmap by Day of Week
+
+Reveals the weekly rhythm of the CBD — weekday lunchtime peaks, quiet weekend mornings, and Friday/Saturday evening activity.
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+from akl_ped_counts import load_hourly
+
+df = load_hourly(dropna=True)
+
+# Extract start hour from "6:00-6:59" format
+df["start_hour"] = df["hour"].str.split(":").str[0].astype(int)
+df["dow"] = df["date"].dt.dayofweek
+
+sensor_cols = [c for c in df.columns if c not in
+               ("date", "hour", "year", "start_hour", "dow")]
+
+# Mean footfall across all sensors
+df["mean_count"] = df[sensor_cols].mean(axis=1)
+
+pivot = df.pivot_table(
+    values="mean_count", index="start_hour", columns="dow",
+    aggfunc="mean"
+)
+pivot.columns = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+fig, ax = plt.subplots(figsize=(10, 8))
+sns.heatmap(pivot, annot=True, fmt=".0f", cmap="YlOrRd",
+            cbar_kws={"label": "Mean Pedestrian Count"}, ax=ax)
+ax.set_title("Average Hourly Pedestrian Footfall by Day of Week\n"
+             "(Auckland CBD, 2019–2025)")
+ax.set_ylabel("Hour of Day")
+ax.set_xlabel("Day of Week")
+plt.tight_layout()
+plt.savefig("heatmap_hour_dow.png", dpi=300)
+```
+
+![Heatmap](../examples/heatmap_hour_dow.png)
+
+## Above/Below Average Footfall
+
+Identifies which streets consistently attract more or fewer pedestrians than the city-wide average.
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+totals = df[sensor_cols].sum().sort_values()
+avg = totals.mean()
+deviation = totals - avg
+
+colours = ["#2ecc71" if v > 0 else "#e74c3c" for v in deviation]
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.barh(deviation.index, deviation.values, color=colours)
+ax.axvline(0, color="black", linestyle="--", linewidth=0.8)
+ax.set_xlabel("Deviation from Average Footfall")
+ax.set_title("Sensor Footfall Relative to Average\n"
+             "(Auckland CBD, 2019–2025)")
+plt.tight_layout()
+plt.savefig("above_below_average.png", dpi=300)
+```
+
+![Above Below Average](../examples/above_below_average.png)
+
+## Interactive Sensor Map
+
+Create an interactive map showing all 21 sensor locations with circle markers sized by total footfall.
+
+```{python}
+#| eval: false
+import folium
+from akl_ped_counts import load_hourly, load_locations
+
+locs = load_locations()
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+totals = df[sensor_cols].sum()
+
+centre = [locs["Latitude"].mean(), locs["Longitude"].mean()]
+m = folium.Map(location=centre, zoom_start=15, tiles="OpenStreetMap")
+
+max_total = totals.max()
+for _, row in locs.iterrows():
+    name = row["Address"]
+    total = totals.get(name, 0)
+    radius = 5 + 25 * (total / max_total)
+
+    # Colour: blue (low) → red (high)
+    ratio = total / max_total
+    r = int(255 * ratio)
+    b = int(255 * (1 - ratio))
+    colour = f"#{r:02x}00{b:02x}"
+
+    folium.CircleMarker(
+        location=[row["Latitude"], row["Longitude"]],
+        radius=radius,
+        color=colour, fill=True, fill_color=colour, fill_opacity=0.7,
+        popup=f"<b>{name}</b><br>Total: {total:,.0f}",
+        tooltip=name,
+    ).add_to(m)
+
+m.save("sensor_map.html")
+```
+
+Open `sensor_map.html` in a browser to explore interactively.
+
+**Top 5 busiest sensors:**
+
+1. 45 Queen Street (40.0M)
+2. 30 Queen Street (38.8M)
+3. 210 Queen Street (37.7M)
+4. 261 Queen Street (34.5M)
+5. 297 Queen Street (24.7M)
+
+## Polars Example: March Daily Totals
+
+Using Polars for efficient computation:
+
+```{python}
+#| eval: false
+import polars as pl
+from akl_ped_counts.polars_loader import scan_hourly
+
+march = (
+    scan_hourly()
+    .filter(pl.col("date").dt.month() == 3)
+    .with_columns(pl.col("date").dt.day().alias("day"))
+    .group_by(["year", "day"])
+    .agg(pl.col("45 Queen Street").sum())
+    .sort(["year", "day"])
+    .collect()
+)
+print(march.head(10))
+```

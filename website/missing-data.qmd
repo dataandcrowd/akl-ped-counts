@@ -1,0 +1,169 @@
+---
+title: "Handling Missing Data"
+---
+
+## Overview
+
+Missing values appear as `NaN` (pandas) or `null` (Polars) in the count columns. They arise from three sources:
+
+1. **Sensors not yet installed** (structural missingness)
+2. **Sensor downtime/maintenance** (temporary gaps)
+3. **Data transmission failures** (rare, short gaps)
+
+## Structural Missingness
+
+### 2022 Sensor Additions
+
+Two sensors were added in 2022:
+
+- 188 Quay Street Lower Albert (EW)
+- 188 Quay Street Lower Albert (NS)
+
+These sensors have `NaN` for 2019-2021.
+
+### Working with Uniform Panel
+
+To work with a consistent set of sensors across all years, filter to the 19 original sensors:
+
+**Pandas:**
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly, SENSORS_ADDED_2022
+
+df = load_hourly()
+original = [c for c in df.columns
+            if c not in ("date", "hour", "year")
+            and c not in SENSORS_ADDED_2022]
+df_uniform = df[["date", "hour", "year"] + original]
+```
+
+**Polars:**
+
+```{python}
+#| eval: false
+from akl_ped_counts.polars_loader import load_hourly
+from akl_ped_counts import SENSORS_ADDED_2022
+
+df = load_hourly()
+keep = [c for c in df.columns
+        if c not in ("date", "hour", "year")
+        and c not in SENSORS_ADDED_2022]
+df_uniform = df.select(["date", "hour", "year"] + keep)
+```
+
+## Sensor-Level Gaps
+
+### High Missingness
+
+**107 Quay Street** has ~5.6% missing overall, concentrated in 2022 during extended sensor maintenance.
+
+### Minor Gaps
+
+**150 K Road** has ~1.6% missing in 2023.
+
+## Handling Strategies
+
+### 1. Drop Missing Rows
+
+Simplest approach, recommended when completeness matters:
+
+```{python}
+#| eval: false
+# Pandas
+from akl_ped_counts import load_hourly
+df = load_hourly(dropna=True)
+
+# Polars
+from akl_ped_counts.polars_loader import load_hourly as pl_load
+df = pl_load(dropna=True)
+```
+
+### 2. Forward/Backward Fill
+
+Suitable for short gaps (a few hours):
+
+```{python}
+#| eval: false
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+# Fill up to 3 consecutive hours
+df[sensor_cols] = df[sensor_cols].ffill(limit=3)
+```
+
+### 3. Linear Interpolation
+
+Smooth estimation across moderate gaps:
+
+```{python}
+#| eval: false
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+# Interpolate up to 6 hours
+df[sensor_cols] = df[sensor_cols].interpolate(method="linear", limit=6)
+```
+
+### 4. Seasonal Median Fill
+
+Use the median for the same hour and day-of-week:
+
+```{python}
+#| eval: false
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+df["dow"] = df["date"].dt.dayofweek
+
+for sensor in sensor_cols:
+    mask = df[sensor].isna()
+    if mask.any():
+        medians = df.groupby(["dow", "hour"])[sensor].transform("median")
+        df.loc[mask, sensor] = medians[mask]
+```
+
+## Inspecting Missing Data
+
+### Summary Report
+
+```{python}
+#| eval: false
+from akl_ped_counts import describe_missing
+
+report = describe_missing()
+print(report.query("pct_missing > 0").sort_values("pct_missing", ascending=False))
+```
+
+### Visualize Missingness
+
+```{python}
+#| eval: false
+import matplotlib.pyplot as plt
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+# Count missing by sensor
+missing_counts = df[sensor_cols].isna().sum().sort_values(ascending=False)
+
+plt.figure(figsize=(10, 6))
+missing_counts.plot(kind="barh")
+plt.xlabel("Missing Observations")
+plt.title("Missing Data by Sensor")
+plt.tight_layout()
+plt.show()
+```
+
+## Best Practices
+
+1. **Understand the cause**: Check if missing values are structural (sensor not installed) or temporary (downtime)
+2. **Choose appropriate method**: Match the imputation method to your analysis goals
+3. **Document your approach**: Always note how you handled missing data in your analysis
+4. **Test sensitivity**: For critical analyses, check if results change with different missing data strategies
+
+## Next Steps
+
+- [Data Coverage](data-coverage.qmd) - Overall data quality
+- [API Reference](api-reference.qmd) - Function documentation
+- [Examples](examples.qmd) - Practical use cases
