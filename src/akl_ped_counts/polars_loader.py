@@ -1,7 +1,7 @@
 """
 Polars-based data loading functions for Auckland pedestrian counts.
 
-These mirror the pandas API in :mod:`auckland_pedestrian.loader` but return
+These mirror the pandas API in :mod:`akl_ped_counts.loader` but return
 Polars DataFrames and LazyFrames. Polars must be installed separately::
 
     pip install polars
@@ -10,7 +10,7 @@ Polars DataFrames and LazyFrames. Polars must be installed separately::
 
 Usage::
 
-    from auckland_pedestrian.polars_loader import load_hourly
+    from akl_ped_counts.polars_loader import load_hourly
     df = load_hourly()  # returns polars.DataFrame
 """
 
@@ -23,11 +23,11 @@ try:
     import polars as pl
 except ImportError:
     raise ImportError(
-        "Polars is required for auckland_pedestrian.polars_loader.\n"
+        "Polars is required for akl_ped_counts.polars_loader.\n"
         "Install it with: pip install polars  (or: uv add polars)"
     )
 
-from auckland_pedestrian.loader import _data_path, SENSORS, SENSORS_ADDED_2022
+from akl_ped_counts.loader import _data_path, SENSORS, SENSORS_ADDED_2022
 
 
 # ── Main data loaders (Polars) ──────────────────────────────
@@ -46,7 +46,7 @@ def load_hourly(
         Default loads all years (2019-2025).
     sensors : sequence of str, optional
         Filter to specific sensor locations. Use
-        :func:`~auckland_pedestrian.list_sensors` to see available names.
+        :func:`~akl_ped_counts.list_sensors` to see available names.
     dropna : bool, default False
         If True, drop rows containing any null values in sensor columns.
 
@@ -58,7 +58,7 @@ def load_hourly(
 
     Examples
     --------
-    >>> from auckland_pedestrian.polars_loader import load_hourly
+    >>> from akl_ped_counts.polars_loader import load_hourly
     >>> df = load_hourly(years=[2023])
     >>> df.shape
     (8760, 24)
@@ -106,7 +106,7 @@ def scan_hourly(
 
     Examples
     --------
-    >>> from auckland_pedestrian.polars_loader import scan_hourly
+    >>> from akl_ped_counts.polars_loader import scan_hourly
     >>> lf = scan_hourly(years=[2024])
     >>> daily = (
     ...     lf.group_by("date")

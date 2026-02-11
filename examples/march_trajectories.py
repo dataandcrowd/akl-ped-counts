@@ -6,8 +6,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Load the data
-df = pd.read_csv('/sessions/eager-elegant-bardeen/auckland-pedestrian/src/auckland_pedestrian/data/hourly_counts.csv')
-df['date'] = pd.to_datetime(df['date'])
+from akl_ped_counts import load_hourly
+df = load_hourly()
 
 # Extract month from date
 df['month'] = df['date'].dt.month
@@ -90,7 +90,7 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # Create output directory if needed
 import os
-output_dir = '/sessions/eager-elegant-bardeen/auckland-pedestrian/examples'
+output_dir = 'examples'
 os.makedirs(output_dir, exist_ok=True)
 
 # Save figure

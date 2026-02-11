@@ -15,7 +15,7 @@ import pandas as pd
 
 def _data_path(filename: str) -> str:
     """Resolve the path to a bundled data file."""
-    ref = resources.files("auckland_pedestrian") / "data" / filename
+    ref = resources.files("akl_ped_counts") / "data" / filename
     # For older Python (<3.9 compat), fall back to path()
     if hasattr(ref, "__fspath__"):
         return str(ref)
@@ -67,7 +67,7 @@ def list_sensors() -> list[str]:
 
     Examples
     --------
-    >>> from auckland_pedestrian import list_sensors
+    >>> from akl_ped_counts import list_sensors
     >>> sensors = list_sensors()
     >>> len(sensors)
     21
@@ -104,7 +104,7 @@ def load_hourly(
 
     Examples
     --------
-    >>> from auckland_pedestrian import load_hourly
+    >>> from akl_ped_counts import load_hourly
     >>> df = load_hourly(years=[2023])
     >>> df.shape
     (8760, 24)
@@ -142,7 +142,7 @@ def load_locations() -> pd.DataFrame:
 
     Examples
     --------
-    >>> from auckland_pedestrian import load_locations
+    >>> from akl_ped_counts import load_locations
     >>> locs = load_locations()
     >>> locs[["Address", "Latitude", "Longitude"]].head(3)
     """
@@ -173,7 +173,7 @@ def load_daily(
 
     Examples
     --------
-    >>> from auckland_pedestrian import load_daily
+    >>> from akl_ped_counts import load_daily
     >>> daily = load_daily(years=[2024])
     >>> daily.head()
     """
@@ -213,7 +213,7 @@ def load_monthly(
 
     Examples
     --------
-    >>> from auckland_pedestrian import load_monthly
+    >>> from akl_ped_counts import load_monthly
     >>> monthly = load_monthly()
     >>> monthly.head()
     """
@@ -247,7 +247,7 @@ def describe_missing() -> pd.DataFrame:
 
     Examples
     --------
-    >>> from auckland_pedestrian import describe_missing
+    >>> from akl_ped_counts import describe_missing
     >>> report = describe_missing()
     >>> report.query("pct_missing > 1")
     """

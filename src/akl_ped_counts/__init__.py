@@ -8,7 +8,7 @@ monitoring system, covering 21 sensor locations across Auckland CBD
 
 Quick start::
 
-    >>> from auckland_pedestrian import load_hourly, load_locations
+    >>> from akl_ped_counts import load_hourly, load_locations
     >>> counts = load_hourly()
     >>> locations = load_locations()
 
@@ -18,11 +18,11 @@ Licensed under CC BY 4.0.
 
 Polars support::
 
-    from auckland_pedestrian.polars_loader import load_hourly
+    from akl_ped_counts.polars_loader import load_hourly
     counts = load_hourly()  # returns polars.DataFrame
 """
 
-from auckland_pedestrian.loader import (
+from akl_ped_counts.loader import (
     load_hourly,
     load_locations,
     load_daily,

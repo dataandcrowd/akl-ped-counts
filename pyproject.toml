@@ -54,13 +54,13 @@ Documentation = "https://github.com/hyesop/akl-ped-counts#readme"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "src/akl-ped-counts/**",
+    "src/akl_ped_counts/**",
     "README.md",
     "LICENSE",
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/akl-ped-counts"]
+packages = ["src/akl_ped_counts"]
 
 [[tool.uv.index]]
 name = "testpypi"
