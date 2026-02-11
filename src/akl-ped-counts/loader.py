@@ -15,7 +15,7 @@ import pandas as pd
 
 def _data_path(filename: str) -> str:
     """Resolve the path to a bundled data file."""
-    ref = resources.files("akl-ped-counts") / "data" / filename
+    ref = resources.files("auckland_pedestrian") / "data" / filename
     # For older Python (<3.9 compat), fall back to path()
     if hasattr(ref, "__fspath__"):
         return str(ref)

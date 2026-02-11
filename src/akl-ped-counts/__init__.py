@@ -1,5 +1,5 @@
 """
-akl-ped-counts
+auckland-pedestrian
 ===================
 
 Hourly pedestrian count data from Heart of the City Auckland's pedestrian
@@ -15,6 +15,11 @@ Quick start::
 Data source: Heart of the City Auckland
 https://www.hotcity.co.nz/pedestrian-counts
 Licensed under CC BY 4.0.
+
+Polars support::
+
+    from auckland_pedestrian.polars_loader import load_hourly
+    counts = load_hourly()  # returns polars.DataFrame
 """
 
 from auckland_pedestrian.loader import (

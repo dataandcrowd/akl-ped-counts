@@ -1,7 +1,7 @@
-# Pedestrian Counts in Auckland CBD
+# akl-ped-counts
 
-[![PyPI version](https://img.shields.io/pypi/v/auckland-ped-counts)](https://pypi.org/project/auckland-ped-counts/)
-[![Python](https://img.shields.io/pypi/pyversions/auckland-ped-counts)](https://pypi.org/project/auckland-ped-counts/)
+[![PyPI version](https://img.shields.io/pypi/v/akl-ped-counts)](https://pypi.org/project/akl-ped-counts/)
+[![Python](https://img.shields.io/pypi/pyversions/akl-ped-counts)](https://pypi.org/project/akl-ped-counts/)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 Hourly pedestrian count data from [Heart of the City Auckland](https://www.hotcity.co.nz/pedestrian-counts)'s pedestrian monitoring system, covering **21 sensor locations** across Auckland CBD from **2019 to 2025**.
@@ -27,7 +27,7 @@ You will also need accounts on both [TestPyPI](https://test.pypi.org/account/reg
 ### Step 1: Build the package
 
 ```bash
-cd auckland-ped-counts
+cd akl-ped-counts
 uv build
 ```
 
@@ -35,8 +35,8 @@ This creates two files in `dist/`:
 
 ```
 dist/
-├── auckland-ped-counts-0.1.0-py3-none-any.whl
-└── auckland-ped-counts-0.1.0.tar.gz
+├── auckland_pedestrian-0.1.0-py3-none-any.whl
+└── auckland_pedestrian-0.1.0.tar.gz
 ```
 
 ### Step 2: Publish to TestPyPI
@@ -65,11 +65,11 @@ source /tmp/test-install/bin/activate
 uv pip install \
   --index-url https://test.pypi.org/simple/ \
   --extra-index-url https://pypi.org/simple/ \
-  auckland-ped-counts
+  akl-ped-counts
 
 # Smoke test
 python -c "
-from auckland-ped-counts import load_hourly, load_locations, list_sensors
+from auckland_pedestrian import load_hourly, load_locations, list_sensors
 print('Sensors:', len(list_sensors()))
 print('Hourly shape:', load_hourly().shape)
 print('Locations shape:', load_locations().shape)
@@ -100,7 +100,7 @@ uv publish
 To release a new version, update the version string in **two places**:
 
 1. `pyproject.toml` → `version = "0.2.0"`
-2. `src/auckland-ped-counts/__init__.py` → `__version__ = "0.2.0"`
+2. `src/auckland_pedestrian/__init__.py` → `__version__ = "0.2.0"`
 
 Then rebuild and publish:
 
@@ -114,17 +114,26 @@ uv publish
 ## Installation (for users)
 
 ```bash
-# uv
-uv add auckland-ped-counts
+# Core (pandas only)
+uv add akl-ped-counts        # or: pip install akl-ped-counts
 
-# pip
-pip install auckland-ped-counts
+# With Polars support
+uv add "akl-ped-counts[polars]"
+
+# With plotting (matplotlib + seaborn)
+uv add "akl-ped-counts[plot]"
+
+# With mapping (folium)
+uv add "akl-ped-counts[geo]"
+
+# Everything
+uv add "akl-ped-counts[all]"
 ```
 
 ## Quick start
 
 ```python
-from auckland-ped-counts import load_hourly, load_locations, list_sensors
+from auckland_pedestrian import load_hourly, load_locations, list_sensors
 
 # Load all hourly counts (61,000+ rows × 21 sensors)
 counts = load_hourly()
@@ -136,7 +145,9 @@ locations = load_locations()
 print(list_sensors())
 ```
 
-## API reference
+---
+
+## API reference — pandas
 
 ### `load_hourly(years=None, sensors=None, dropna=False)`
 
@@ -173,10 +184,6 @@ monthly = load_monthly()
 
 Sensor metadata: `Address`, `Latitude`, `Longitude` (WGS 84).
 
-```python
-locs = load_locations()
-```
-
 ### `list_sensors()`
 
 Returns the list of all 21 sensor location names.
@@ -186,11 +193,234 @@ Returns the list of all 21 sensor location names.
 Returns a DataFrame summarising missing data by year and sensor, with columns `year`, `sensor`, `total_hours`, `missing_hours`, `pct_missing`.
 
 ```python
-from auckland-ped-counts import describe_missing
-
+from auckland_pedestrian import describe_missing
 report = describe_missing()
 print(report.query("pct_missing > 1"))
 ```
+
+---
+
+## API reference — Polars
+
+All Polars functions live in `auckland_pedestrian.polars_loader` and mirror the pandas API. Polars must be installed (`pip install polars` or `uv add polars`).
+
+### `load_hourly(years=None, sensors=None, dropna=False)`
+
+```python
+from auckland_pedestrian.polars_loader import load_hourly
+
+df = load_hourly(years=[2023, 2024])
+print(df.shape)  # (17543, 24)
+```
+
+### `scan_hourly(years=None, sensors=None)` — LazyFrame
+
+Returns a `pl.LazyFrame` for deferred execution. Useful for pushing filters and aggregations down before collecting.
+
+```python
+from auckland_pedestrian.polars_loader import scan_hourly
+import polars as pl
+
+# Lazy daily totals for one sensor
+daily = (
+    scan_hourly(years=[2024])
+    .group_by("date")
+    .agg(pl.col("45 Queen Street").sum())
+    .sort("date")
+    .collect()
+)
+```
+
+### `load_daily`, `load_monthly`, `load_locations`, `describe_missing`
+
+All have the same signatures as the pandas versions but return `pl.DataFrame`.
+
+```python
+from auckland_pedestrian.polars_loader import load_daily, load_locations
+
+daily = load_daily(years=[2024], dropna=True)
+locs = load_locations()
+```
+
+### Polars example: March daily totals across years
+
+```python
+import polars as pl
+from auckland_pedestrian.polars_loader import scan_hourly
+
+march = (
+    scan_hourly()
+    .filter(pl.col("date").dt.month() == 3)
+    .with_columns(pl.col("date").dt.day().alias("day"))
+    .group_by(["year", "day"])
+    .agg(pl.col("45 Queen Street").sum())
+    .sort(["year", "day"])
+    .collect()
+)
+print(march.head(10))
+```
+
+---
+
+## Visualisation examples
+
+Install plotting dependencies: `pip install matplotlib seaborn folium` (or `uv add "akl-ped-counts[all]"`).
+
+### March daily trajectories by year
+
+Compare how footfall evolves through March at different sensors, year by year. The COVID-19 impact (2020–2021) and post-recovery trend are clearly visible.
+
+![March Trajectories](examples/march_trajectories.png)
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import numpy as np
+from auckland_pedestrian import load_hourly
+
+df = load_hourly()
+df_march = df[df["date"].dt.month == 3].copy()
+df_march["day"] = df_march["date"].dt.day
+
+sensors = [
+    "45 Queen Street", "210 Queen Street", "297 Queen Street",
+    "107 Quay Street", "2 High Street", "150 K Road",
+    "183 K Road", "Commerce Street West", "19 Shortland Street",
+]
+years = sorted(df_march["year"].unique())
+colours = cm.viridis(np.linspace(0, 1, len(years)))
+
+fig, axes = plt.subplots(3, 3, figsize=(14, 10), sharex=True)
+for ax, sensor in zip(axes.flat, sensors):
+    for yr, colour in zip(years, colours):
+        sub = df_march[df_march["year"] == yr]
+        daily = sub.groupby("day")[sensor].sum()
+        ax.plot(daily.index, daily.values, label=str(yr),
+                color=colour, linewidth=1.2)
+    ax.set_title(sensor, fontsize=10)
+    ax.set_xlabel("Day of March")
+    ax.set_ylabel("Daily Footfall")
+
+handles, labels = axes[0, 0].get_legend_handles_labels()
+fig.legend(handles, labels, loc="upper center", ncol=len(years),
+           title="Year", fontsize=9)
+plt.tight_layout(rect=[0, 0, 1, 0.95])
+plt.savefig("march_trajectories.png", dpi=300)
+```
+
+### Heatmap: average footfall by hour and day of week
+
+Reveals the weekly rhythm of the CBD — weekday lunchtime peaks, quiet weekend mornings, and Friday/Saturday evening activity.
+
+![Heatmap](examples/heatmap_hour_dow.png)
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+from auckland_pedestrian import load_hourly
+
+df = load_hourly(dropna=True)
+
+# Extract start hour from "6:00-6:59" format
+df["start_hour"] = df["hour"].str.split(":").str[0].astype(int)
+df["dow"] = df["date"].dt.dayofweek
+
+sensor_cols = [c for c in df.columns if c not in
+               ("date", "hour", "year", "start_hour", "dow")]
+
+# Mean footfall across all sensors
+df["mean_count"] = df[sensor_cols].mean(axis=1)
+
+pivot = df.pivot_table(
+    values="mean_count", index="start_hour", columns="dow",
+    aggfunc="mean"
+)
+pivot.columns = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+fig, ax = plt.subplots(figsize=(10, 8))
+sns.heatmap(pivot, annot=True, fmt=".0f", cmap="YlOrRd",
+            cbar_kws={"label": "Mean Pedestrian Count"}, ax=ax)
+ax.set_title("Average Hourly Pedestrian Footfall by Day of Week\n"
+             "(Auckland CBD, 2019–2025)")
+ax.set_ylabel("Hour of Day")
+ax.set_xlabel("Day of Week")
+plt.tight_layout()
+plt.savefig("heatmap_hour_dow.png", dpi=300)
+```
+
+### Above / below average footfall by sensor
+
+Identifies which streets consistently attract more or fewer pedestrians than the city-wide average. Queen Street dominates; side streets and Karangahape Road sensors sit below the mean.
+
+![Above Below Average](examples/above_below_average.png)
+
+```python
+import matplotlib.pyplot as plt
+from auckland_pedestrian import load_hourly
+
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+totals = df[sensor_cols].sum().sort_values()
+avg = totals.mean()
+deviation = totals - avg
+
+colours = ["#2ecc71" if v > 0 else "#e74c3c" for v in deviation]
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.barh(deviation.index, deviation.values, color=colours)
+ax.axvline(0, color="black", linestyle="--", linewidth=0.8)
+ax.set_xlabel("Deviation from Average Footfall")
+ax.set_title("Sensor Footfall Relative to Average\n"
+             "(Auckland CBD, 2019–2025)")
+plt.tight_layout()
+plt.savefig("above_below_average.png", dpi=300)
+```
+
+### Interactive sensor map (Folium)
+
+An interactive map showing all 21 sensor locations with circle markers sized by total footfall. Clicking a marker shows the sensor name and count.
+
+```python
+import folium
+import pandas as pd
+from auckland_pedestrian import load_hourly, load_locations
+
+locs = load_locations()
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+totals = df[sensor_cols].sum()
+
+centre = [locs["Latitude"].mean(), locs["Longitude"].mean()]
+m = folium.Map(location=centre, zoom_start=15, tiles="OpenStreetMap")
+
+max_total = totals.max()
+for _, row in locs.iterrows():
+    name = row["Address"]
+    total = totals.get(name, 0)
+    radius = 5 + 25 * (total / max_total)
+
+    # Colour: blue (low) → red (high)
+    ratio = total / max_total
+    r = int(255 * ratio)
+    b = int(255 * (1 - ratio))
+    colour = f"#{r:02x}00{b:02x}"
+
+    folium.CircleMarker(
+        location=[row["Latitude"], row["Longitude"]],
+        radius=radius,
+        color=colour, fill=True, fill_color=colour, fill_opacity=0.7,
+        popup=f"<b>{name}</b><br>Total: {total:,.0f}",
+        tooltip=name,
+    ).add_to(m)
+
+m.save("sensor_map.html")
+```
+
+Open `sensor_map.html` in a browser to explore interactively. Top-5 busiest sensors: 45 Queen Street (40.0M), 30 Queen Street (38.8M), 210 Queen Street (37.7M), 261 Queen Street (34.5M), and 297 Queen Street (24.7M).
+
+---
 
 ## Data coverage
 
@@ -206,20 +436,34 @@ print(report.query("pct_missing > 1"))
 
 ## Handling missing data
 
-Missing values appear as `NaN` in the count columns. They arise from three sources: sensors not yet installed, sensor downtime/maintenance, and data transmission failures.
+Missing values appear as `NaN` (pandas) or `null` (Polars) in the count columns. They arise from three sources: sensors not yet installed, sensor downtime/maintenance, and data transmission failures.
 
 ### Structural missingness
 
 The two **188 Quay Street Lower Albert** sensors (EW and NS) were installed in 2022 and are therefore `NaN` for 2019–2021. To work with a uniform panel across all years, filter to the 19 original sensors:
 
 ```python
-from auckland-ped-counts import load_hourly, SENSORS_ADDED_2022
+from auckland_pedestrian import load_hourly, SENSORS_ADDED_2022
 
 df = load_hourly()
 original = [c for c in df.columns
             if c not in ("date", "hour", "year")
             and c not in SENSORS_ADDED_2022]
 df_uniform = df[["date", "hour", "year"] + original]
+```
+
+Polars equivalent:
+
+```python
+import polars as pl
+from auckland_pedestrian.polars_loader import load_hourly
+from auckland_pedestrian import SENSORS_ADDED_2022
+
+df = load_hourly()
+keep = [c for c in df.columns
+        if c not in ("date", "hour", "year")
+        and c not in SENSORS_ADDED_2022]
+df_uniform = df.select(["date", "hour", "year"] + keep)
 ```
 
 ### Sensor-level gaps
@@ -231,9 +475,13 @@ df_uniform = df[["date", "hour", "year"] + original]
 **1. Drop missing rows** — simplest approach, recommended when completeness matters:
 
 ```python
+# pandas
 df = load_hourly(dropna=True)
-# or equivalently
-df = load_hourly().dropna()
+# or: df = load_hourly().dropna()
+
+# polars
+from auckland_pedestrian.polars_loader import load_hourly as pl_load
+df = pl_load(dropna=True)
 ```
 
 **2. Forward/backward fill** — suitable for short gaps of a few hours:
@@ -289,13 +537,20 @@ Licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](http
 ## Package structure
 
 ```
-auckland-ped-counts/
+akl-ped-counts/
 ├── pyproject.toml                      # Build config (hatchling backend, compatible with uv)
 ├── README.md
 ├── LICENSE
-└── src/auckland-ped-counts/
+├── examples/                           # Visualisation scripts and outputs
+│   ├── march_trajectories.py
+│   ├── march_trajectories.png
+│   ├── heatmap_hour_dow.png
+│   ├── above_below_average.png
+│   └── sensor_map.html
+└── src/auckland_pedestrian/
     ├── __init__.py                     # Public API and version
-    ├── loader.py                       # All data loading functions
+    ├── loader.py                       # Pandas data loading functions
+    ├── polars_loader.py                # Polars data loading functions
     ├── py.typed                        # PEP 561 marker
     └── data/
         ├── hourly_counts.csv           # 61,367 rows × 24 columns (~8 MB)

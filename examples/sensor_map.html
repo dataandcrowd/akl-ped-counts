@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auckland CBD Pedestrian Sensors</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        .title-box {
+            position: absolute;
+            top: 10px;
+            left: 50px;
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            font-size: 12px;
+            max-width: 200px;
+        }
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .legend-item {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 8px;
+            border-radius: 50%;
+            border: 1px solid #999;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="title-box">
+        Auckland CBD Pedestrian Sensors (21 Locations)
+    </div>
+    <div class="legend">
+        <div class="legend-title">Total Footfall</div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: rgb(0, 0, 255);"></div>
+            <span>Low (~2.7M)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: rgb(255, 255, 255); border: 1px solid #999;"></div>
+            <span>Medium (~21M)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: rgb(255, 0, 0);"></div>
+            <span>High (~40M)</span>
+        </div>
+        <div style="margin-top: 8px; font-size: 11px; color: #666;">
+            Circle size proportional to footfall
+        </div>
+    </div>
+
+    <script>
+        var map = L.map('map').setView([-36.84796904761904, 174.76537342857145], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        var markers_data = [{"lat": -36.843015, "lon": 174.766494, "name": "107 Quay Street", "footfall": 15003358, "radius": 16.476287635906957, "color": "rgb(167,167,255)"}, {"lat": -36.84306, "lon": 174.76573, "name": "188 Quay Street Lower Albert (EW)", "footfall": 6678435, "radius": 11.51835285590985, "color": "rgb(54,54,255)"}, {"lat": -36.84306, "lon": 174.76573, "name": "188 Quay Street Lower Albert (NS)", "footfall": 5770374, "radius": 10.723412134790054, "color": "rgb(41,41,255)"}, {"lat": -36.84465, "lon": 174.769645, "name": "Te Ara Tahuhu Walkway", "footfall": 15963411, "radius": 16.91611688022148, "color": "rgb(181,181,255)"}, {"lat": -36.844912, "lon": 174.768065, "name": "Commerce Street West", "footfall": 11676108, "radius": 14.800398836461907, "color": "rgb(122,122,255)"}, {"lat": -36.844722, "lon": 174.767057, "name": "7 Custom Street East", "footfall": 20752967, "radius": 18.90404234955907, "color": "rgb(246,246,255)"}, {"lat": -36.845001, "lon": 174.766266, "name": "45 Queen Street", "footfall": 40038412, "radius": 25.0, "color": "rgb(255,0,0)"}, {"lat": -36.84495, "lon": 174.766575, "name": "30 Queen Street", "footfall": 38770970, "radius": 24.657495271121764, "color": "rgb(255,17,17)"}, {"lat": -36.846576, "lon": 174.766946, "name": "19 Shortland Street", "footfall": 10498904, "radius": 14.134111737981588, "color": "rgb(106,106,255)"}, {"lat": -36.846846, "lon": 174.766855, "name": "2 High Street", "footfall": 6870614, "radius": 11.674463377515265, "color": "rgb(56,56,255)"}, {"lat": -36.84817, "lon": 174.76705, "name": "1 Courthouse Lane", "footfall": 2713720, "radius": 5.0, "color": "rgb(0,0,255)"}, {"lat": -36.847964, "lon": 174.762729, "name": "61 Federal Street", "footfall": 8989620, "radius": 13.201058065246645, "color": "rgb(85,85,255)"}, {"lat": -36.848924, "lon": 174.766186, "name": "59 High Street", "footfall": 16579265, "radius": 17.18990585989868, "color": "rgb(189,189,255)"}, {"lat": -36.848899, "lon": 174.76541, "name": "210 Queen Street", "footfall": 37712034, "radius": 24.366691786021907, "color": "rgb(255,31,31)"}, {"lat": -36.848986, "lon": 174.764784, "name": "205 Queen Street", "footfall": 11902782, "radius": 14.923559322622513, "color": "rgb(125,125,255)"}, {"lat": -36.849422, "lon": 174.764172, "name": "8 Darby Street EW", "footfall": 5310902, "radius": 10.275736198512893, "color": "rgb(35,35,255)"}, {"lat": -36.849422, "lon": 174.764172, "name": "8 Darby Street NS", "footfall": 12164135, "radius": 15.063691601133492, "color": "rgb(129,129,255)"}, {"lat": -36.850792, "lon": 174.764556, "name": "261 Queen Street", "footfall": 34501684, "radius": 23.457090240949636, "color": "rgb(255,75,75)"}, {"lat": -36.852232, "lon": 174.763915, "name": "297 Queen Street", "footfall": 24710729, "radius": 20.35372280382364, "color": "rgb(255,209,209)"}, {"lat": -36.857973, "lon": 174.760382, "name": "150 K Road", "footfall": 8743494, "radius": 13.038636611784128, "color": "rgb(82,82,255)"}, {"lat": -36.857774, "lon": 174.760123, "name": "183 K Road", "footfall": 19877767, "radius": 18.562561698477626, "color": "rgb(234,234,255)"}];
+        
+        markers_data.forEach(function(marker) {
+            var popup = '<b>' + marker.name + '</b><br/>' +
+                        'Total Footfall: ' + marker.footfall.toLocaleString() + '<br/>' +
+                        'Lat: ' + marker.lat.toFixed(6) + '<br/>' +
+                        'Lon: ' + marker.lon.toFixed(6);
+            
+            L.circleMarker([marker.lat, marker.lon], {
+                radius: marker.radius,
+                fillColor: marker.color,
+                color: '#333',
+                weight: 2,
+                opacity: 0.8,
+                fillOpacity: 0.7
+            }).bindPopup(popup)
+              .bindTooltip(marker.name, {permanent: false, direction: 'top'})
+              .addTo(map);
+        });
+    </script>
+</body>
+</html>
