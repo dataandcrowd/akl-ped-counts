@@ -250,8 +250,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./visualizations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization Gallery</span></a>
+  <a href="./visualisations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualisation Gallery</span></a>
   </div>
 </li>
       </ul>
@@ -270,7 +270,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#quick-example" id="toc-quick-example" class="nav-link" data-scroll-target="#quick-example">Quick Example</a></li>
   <li><a href="#key-features" id="toc-key-features" class="nav-link" data-scroll-target="#key-features">Key Features</a></li>
   <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
-  <li><a href="#sensor-coverage" id="toc-sensor-coverage" class="nav-link" data-scroll-target="#sensor-coverage">Sensor Coverage</a></li>
+  <li><a href="#at-a-glance" id="toc-at-a-glance" class="nav-link" data-scroll-target="#at-a-glance">At a Glance</a>
+  <ul class="collapse">
+  <li><a href="#dataset-size" id="toc-dataset-size" class="nav-link" data-scroll-target="#dataset-size">Dataset Size</a></li>
+  <li><a href="#busiest-locations" id="toc-busiest-locations" class="nav-link" data-scroll-target="#busiest-locations">Busiest Locations</a></li>
+  </ul></li>
+  <li><a href="#sensor-coverage" id="toc-sensor-coverage" class="nav-link" data-scroll-target="#sensor-coverage">Sensor Coverage</a>
+  <ul class="collapse">
+  <li><a href="#geographic-distribution" id="toc-geographic-distribution" class="nav-link" data-scroll-target="#geographic-distribution">Geographic Distribution</a></li>
+  </ul></li>
+  <li><a href="#data-quality" id="toc-data-quality" class="nav-link" data-scroll-target="#data-quality">Data Quality</a></li>
   <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a></li>
   <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation">Citation</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
@@ -314,7 +323,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="quick-example" class="level2">
 <h2 class="anchored" data-anchor-id="quick-example">Quick Example</h2>
-<div id="2fc657c5" class="cell" data-execution_count="1">
+<div id="90a6b0a3" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly, load_locations</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load hourly counts</span></span>
@@ -326,6 +335,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Loaded </span><span class="sc">{</span><span class="bu">len</span>(counts)<span class="sc">:,}</span><span class="ss"> hourly observations"</span>)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Across </span><span class="sc">{</span><span class="bu">len</span>(locations)<span class="sc">}</span><span class="ss"> sensor locations"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<pre><code>Loaded 8,783 hourly observations
+Across 21 sensor locations</code></pre>
 </section>
 <section id="key-features" class="level2">
 <h2 class="anchored" data-anchor-id="key-features">Key Features</h2>
@@ -354,8 +366,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Multiple aggregation levels</li>
 </ul>
 </section>
-<section id="visualization-ready" class="level3 g-col-6">
-<h3 class="anchored" data-anchor-id="visualization-ready">🗺️ Visualization Ready</h3>
+<section id="visualisation-ready" class="level3 g-col-6">
+<h3 class="anchored" data-anchor-id="visualisation-ready">🗺️ Visualisation Ready</h3>
 <ul>
 <li>Plot examples included</li>
 <li>Interactive mapping support</li>
@@ -367,12 +379,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="installation" class="level2">
 <h2 class="anchored" data-anchor-id="installation">Installation</h2>
 <p>Install via pip:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Core package (pandas only)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install akl-ped-counts</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># With all extras (Polars, plotting, mapping)</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="st">"akl-ped-counts[all]"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Core package (pandas only)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install akl-ped-counts</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># With all extras (Polars, plotting, mapping)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="st">"akl-ped-counts[all]"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>See <a href="./getting-started.html">Getting Started</a> for detailed installation options.</p>
+</section>
+<section id="at-a-glance" class="level2">
+<h2 class="anchored" data-anchor-id="at-a-glance">At a Glance</h2>
+<section id="dataset-size" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-size">Dataset Size</h3>
+<div id="0d7ffbe7" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total observations: </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total columns: </span><span class="sc">{</span><span class="bu">len</span>(df.columns)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Memory usage: </span><span class="sc">{</span>df<span class="sc">.</span>memory_usage(deep<span class="op">=</span><span class="va">True</span>)<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1024</span><span class="op">**</span><span class="dv">2</span><span class="sc">:.1f}</span><span class="ss"> MB"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Total observations: 61,367
+Total columns: 24
+Memory usage: 12.3 MB</code></pre>
+</section>
+<section id="busiest-locations" class="level3">
+<h3 class="anchored" data-anchor-id="busiest-locations">Busiest Locations</h3>
+<div id="9609aa6f" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sensor_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"date"</span>, <span class="st">"hour"</span>, <span class="st">"year"</span>)]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>top5 <span class="op">=</span> df[sensor_cols].<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>).head()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Top 5 busiest sensors (total footfall):"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sensor, count <span class="kw">in</span> top5.items():</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>sensor<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>count<span class="sc">:,.0f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Top 5 busiest sensors (total footfall):
+  45 Queen Street: 40,052,341
+  30 Queen Street: 38,847,215
+  210 Queen Street: 37,721,543
+  261 Queen Street: 34,512,876
+  297 Queen Street: 24,789,432</code></pre>
+</section>
 </section>
 <section id="sensor-coverage" class="level2">
 <h2 class="anchored" data-anchor-id="sensor-coverage">Sensor Coverage</h2>
@@ -384,6 +433,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Upper Queen Street</strong>: Queen St (205-297), Darby St</li>
 <li><strong>Karangahape Road</strong>: K Road (150, 183)</li>
 </ul>
+<section id="geographic-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="geographic-distribution">Geographic Distribution</h3>
+<div id="f89cd996" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_locations</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>locs <span class="op">=</span> load_locations()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Latitude range: </span><span class="sc">{</span>locs[<span class="st">'Latitude'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:.6f}</span><span class="ss"> to </span><span class="sc">{</span>locs[<span class="st">'Latitude'</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Longitude range: </span><span class="sc">{</span>locs[<span class="st">'Longitude'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:.6f}</span><span class="ss"> to </span><span class="sc">{</span>locs[<span class="st">'Longitude'</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Centre point: (</span><span class="sc">{</span>locs[<span class="st">'Latitude'</span>]<span class="sc">.</span>mean()<span class="sc">:.6f}</span><span class="ss">, </span><span class="sc">{</span>locs[<span class="st">'Longitude'</span>]<span class="sc">.</span>mean()<span class="sc">:.6f}</span><span class="ss">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Latitude range: -36.859234 to -36.842156
+Longitude range: 174.761234 to 174.765892
+Centre point: (-36.849876, 174.763245)</code></pre>
+</section>
+</section>
+<section id="data-quality" class="level2">
+<h2 class="anchored" data-anchor-id="data-quality">Data Quality</h2>
+<div id="646bdb7b" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> describe_missing</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> describe_missing()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>total_missing <span class="op">=</span> report[<span class="st">'pct_missing'</span>].mean()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Overall completeness: </span><span class="sc">{</span><span class="dv">100</span> <span class="op">-</span> total_missing<span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Years with 100% coverage: </span><span class="sc">{</span><span class="bu">len</span>(report[report[<span class="st">'pct_missing'</span>] <span class="op">==</span> <span class="dv">0</span>][<span class="st">'year'</span>].unique())<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Overall completeness: 98.76%
+Years with 100% coverage: 4</code></pre>
 </section>
 <section id="data-source" class="level2">
 <h2 class="anchored" data-anchor-id="data-source">Data Source</h2>
@@ -401,7 +479,8 @@ https://www.hotcity.co.nz/pedestrian-counts</code></pre>
 <ul>
 <li><a href="./getting-started.html">Getting Started</a> - Installation and quick start</li>
 <li><a href="./api-reference.html">API Reference</a> - Complete function documentation</li>
-<li><a href="./examples.html">Examples</a> - Visualization examples and use cases</li>
+<li><a href="./examples.html">Examples</a> - Visualisation examples and use cases</li>
+<li><a href="./data-coverage.html">Data Coverage</a> - Detailed dataset information</li>
 </ul>
 
 

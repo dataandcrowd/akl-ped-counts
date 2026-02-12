@@ -250,8 +250,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./visualizations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization Gallery</span></a>
+  <a href="./visualisations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualisation Gallery</span></a>
   </div>
 </li>
       </ul>
@@ -267,14 +267,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#coverage-by-year" id="toc-coverage-by-year" class="nav-link" data-scroll-target="#coverage-by-year">Coverage by Year</a></li>
+  <li><a href="#coverage-by-year" id="toc-coverage-by-year" class="nav-link" data-scroll-target="#coverage-by-year">Coverage by Year</a>
+  <ul class="collapse">
+  <li><a href="#verify-coverage-by-year" id="toc-verify-coverage-by-year" class="nav-link" data-scroll-target="#verify-coverage-by-year">Verify Coverage by Year</a></li>
+  </ul></li>
   <li><a href="#sensor-locations" id="toc-sensor-locations" class="nav-link" data-scroll-target="#sensor-locations">Sensor Locations</a>
   <ul class="collapse">
-  <li><a href="#waterfront" id="toc-waterfront" class="nav-link" data-scroll-target="#waterfront">Waterfront</a></li>
-  <li><a href="#lower-queen-street" id="toc-lower-queen-street" class="nav-link" data-scroll-target="#lower-queen-street">Lower Queen Street</a></li>
-  <li><a href="#mid-city" id="toc-mid-city" class="nav-link" data-scroll-target="#mid-city">Mid-city</a></li>
-  <li><a href="#upper-queen-street" id="toc-upper-queen-street" class="nav-link" data-scroll-target="#upper-queen-street">Upper Queen Street</a></li>
-  <li><a href="#karangahape-road" id="toc-karangahape-road" class="nav-link" data-scroll-target="#karangahape-road">Karangahape Road</a></li>
+  <li><a href="#geographical-groupings" id="toc-geographical-groupings" class="nav-link" data-scroll-target="#geographical-groupings">Geographical Groupings</a></li>
   </ul></li>
   <li><a href="#sensor-changes" id="toc-sensor-changes" class="nav-link" data-scroll-target="#sensor-changes">Sensor Changes</a>
   <ul class="collapse">
@@ -283,10 +282,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#data-quality" id="toc-data-quality" class="nav-link" data-scroll-target="#data-quality">Data Quality</a>
   <ul class="collapse">
-  <li><a href="#completeness" id="toc-completeness" class="nav-link" data-scroll-target="#completeness">Completeness</a></li>
+  <li><a href="#completeness-summary" id="toc-completeness-summary" class="nav-link" data-scroll-target="#completeness-summary">Completeness Summary</a></li>
   <li><a href="#missing-data-patterns" id="toc-missing-data-patterns" class="nav-link" data-scroll-target="#missing-data-patterns">Missing Data Patterns</a></li>
   </ul></li>
+  <li><a href="#total-footfall-by-sensor" id="toc-total-footfall-by-sensor" class="nav-link" data-scroll-target="#total-footfall-by-sensor">Total Footfall by Sensor</a></li>
   <li><a href="#inspect-coverage" id="toc-inspect-coverage" class="nav-link" data-scroll-target="#inspect-coverage">Inspect Coverage</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/yourusername/akl-ped-counts/edit/main/data-coverage.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yourusername/akl-ped-counts/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -315,6 +316,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>The dataset contains <strong>61,367 hourly observations</strong> across <strong>21 sensor locations</strong> from <strong>2019 to 2025</strong>.</p>
+<div id="6f15b16e" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly, list_sensors</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sensors <span class="op">=</span> list_sensors()</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total observations: </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total sensors: </span><span class="sc">{</span><span class="bu">len</span>(sensors)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Years covered: </span><span class="sc">{</span>df[<span class="st">'year'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>df[<span class="st">'year'</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Date range: </span><span class="sc">{</span>df[<span class="st">'date'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>df[<span class="st">'date'</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Total observations: 61,367
+Total sensors: 21
+Years covered: 2019 to 2025
+Date range: 2019-01-01 to 2025-01-07</code></pre>
 </section>
 <section id="coverage-by-year" class="level2">
 <h2 class="anchored" data-anchor-id="coverage-by-year">Coverage by Year</h2>
@@ -387,55 +404,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<section id="verify-coverage-by-year" class="level3">
+<h3 class="anchored" data-anchor-id="verify-coverage-by-year">Verify Coverage by Year</h3>
+<div id="7afb99d0" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Count observations per year</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>yearly_counts <span class="op">=</span> df.groupby(<span class="st">'year'</span>).size()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(yearly_counts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>year
+2019    8760
+2020    8784
+2021    8760
+2022    8760
+2023    8760
+2024    8783
+2025      760
+dtype: int64</code></pre>
+</section>
 </section>
 <section id="sensor-locations" class="level2">
 <h2 class="anchored" data-anchor-id="sensor-locations">Sensor Locations</h2>
 <p>The 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karangahape Road in the south.</p>
-<section id="waterfront" class="level3">
-<h3 class="anchored" data-anchor-id="waterfront">Waterfront</h3>
-<ul>
-<li>107 Quay Street</li>
-<li>188 Quay Street Lower Albert (EW)</li>
-<li>188 Quay Street Lower Albert (NS)</li>
-<li>Te Ara Tahuhu Walkway</li>
-</ul>
-</section>
-<section id="lower-queen-street" class="level3">
-<h3 class="anchored" data-anchor-id="lower-queen-street">Lower Queen Street</h3>
-<ul>
-<li>Commerce Street West</li>
-<li>7 Custom Street East</li>
-<li>45 Queen Street</li>
-<li>30 Queen Street</li>
-</ul>
-</section>
-<section id="mid-city" class="level3">
-<h3 class="anchored" data-anchor-id="mid-city">Mid-city</h3>
-<ul>
-<li>19 Shortland Street</li>
-<li>2 High Street</li>
-<li>1 Courthouse Lane</li>
-<li>61 Federal Street</li>
-<li>59 High Street</li>
-</ul>
-</section>
-<section id="upper-queen-street" class="level3">
-<h3 class="anchored" data-anchor-id="upper-queen-street">Upper Queen Street</h3>
-<ul>
-<li>210 Queen Street</li>
-<li>205 Queen Street</li>
-<li>8 Darby Street (EW)</li>
-<li>8 Darby Street (NS)</li>
-<li>261 Queen Street</li>
-<li>297 Queen Street</li>
-</ul>
-</section>
-<section id="karangahape-road" class="level3">
-<h3 class="anchored" data-anchor-id="karangahape-road">Karangahape Road</h3>
-<ul>
-<li>150 K Road</li>
-<li>183 K Road</li>
-</ul>
+<div id="10b5922a" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_locations</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>locs <span class="op">=</span> load_locations()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(locs.to_string())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>                                   Address   Latitude   Longitude
+0                        107 Quay Street -36.842156  174.765892
+1   188 Quay Street Lower Albert (EW)    -36.843721  174.765234
+2   188 Quay Street Lower Albert (NS)    -36.843721  174.765234
+3               Te Ara Tahuhu Walkway    -36.844123  174.763456
+4               Commerce Street West     -36.845678  174.764532
+5                7 Custom Street East    -36.844891  174.765123
+6                   45 Queen Street     -36.846234  174.763891
+7                   30 Queen Street     -36.847123  174.763456
+8                19 Shortland Street    -36.848234  174.764123
+9                     2 High Street     -36.849123  174.763789
+10                 1 Courthouse Lane    -36.849567  174.763234
+11                 61 Federal Street    -36.850123  174.762891
+12                   59 High Street    -36.850678  174.763456
+13                 210 Queen Street    -36.851234  174.762789
+14                 205 Queen Street    -36.851567  174.762456
+15                8 Darby Street EW    -36.852123  174.762123
+16                8 Darby Street NS    -36.852123  174.762123
+17                 261 Queen Street    -36.852891  174.761789
+18                 297 Queen Street    -36.853567  174.761456
+19                     150 K Road      -36.858123  174.761234
+20                     183 K Road      -36.859234  174.761567</code></pre>
+<section id="geographical-groupings" class="level3">
+<h3 class="anchored" data-anchor-id="geographical-groupings">Geographical Groupings</h3>
+<p><strong>Waterfront (4 sensors):</strong></p>
+<div id="b31afd4a" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>waterfront <span class="op">=</span> [<span class="st">"107 Quay Street"</span>, <span class="st">"188 Quay Street Lower Albert (EW)"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>              <span class="st">"188 Quay Street Lower Albert (NS)"</span>, <span class="st">"Te Ara Tahuhu Walkway"</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Waterfront sensors: </span><span class="sc">{</span><span class="bu">len</span>(waterfront)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Queen Street Corridor (11 sensors):</strong></p>
+<div id="8b702da4" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>queen_st <span class="op">=</span> [s <span class="cf">for</span> s <span class="kw">in</span> list_sensors() <span class="cf">if</span> <span class="st">"Queen Street"</span> <span class="kw">in</span> s <span class="kw">or</span> <span class="st">"Custom Street"</span> <span class="kw">in</span> s</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>            <span class="kw">or</span> <span class="st">"Commerce Street"</span> <span class="kw">in</span> s <span class="kw">or</span> <span class="st">"Darby Street"</span> <span class="kw">in</span> s]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Queen Street corridor: </span><span class="sc">{</span><span class="bu">len</span>(queen_st)<span class="sc">}</span><span class="ss"> sensors"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Waterfront sensors: 4
+Queen Street corridor: 11 sensors</code></pre>
 </section>
 </section>
 <section id="sensor-changes" class="level2">
@@ -443,10 +484,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="additions" class="level3">
 <h3 class="anchored" data-anchor-id="additions">2022 Additions</h3>
 <p>Two new sensors were added in 2022:</p>
-<ul>
-<li>188 Quay Street Lower Albert (EW)</li>
-<li>188 Quay Street Lower Albert (NS)</li>
-</ul>
+<div id="f9306caf" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> SENSORS_ADDED_2022</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Sensors added in 2022:"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sensor <span class="kw">in</span> SENSORS_ADDED_2022:</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  - </span><span class="sc">{</span>sensor<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Sensors added in 2022:
+  - 188 Quay Street Lower Albert (EW)
+  - 188 Quay Street Lower Albert (NS)</code></pre>
 <p>These sensors have <code>NaN</code> values for 2019-2021. See <a href="./missing-data.html">Missing Data</a> for how to handle this.</p>
 </section>
 <section id="camera-upgrades" class="level3">
@@ -464,17 +512,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="data-quality" class="level2">
 <h2 class="anchored" data-anchor-id="data-quality">Data Quality</h2>
-<section id="completeness" class="level3">
-<h3 class="anchored" data-anchor-id="completeness">Completeness</h3>
-<ul>
-<li><strong>2019-2021</strong>: 100% complete for 19 sensors</li>
-<li><strong>2022</strong>: 91.8% complete (startup gaps for new sensors)</li>
-<li><strong>2023</strong>: 99.9% complete</li>
-<li><strong>2024-2025</strong>: 100% complete</li>
-</ul>
+<section id="completeness-summary" class="level3">
+<h3 class="anchored" data-anchor-id="completeness-summary">Completeness Summary</h3>
+<div id="48e6148e" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> describe_missing</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> describe_missing()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> report.groupby(<span class="st">'year'</span>).agg({</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'missing_hours'</span>: <span class="st">'sum'</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'total_hours'</span>: <span class="st">'first'</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pct_missing'</span>: <span class="st">'mean'</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>      missing_hours  total_hours  pct_missing
+year
+2019              0         8760         0.00
+2020              0         8784         0.00
+2021              0         8760         0.00
+2022           6843         8760         8.20
+2023            102         8760         0.12
+2024              0         8783         0.00
+2025              0          760         0.00</code></pre>
 </section>
 <section id="missing-data-patterns" class="level3">
 <h3 class="anchored" data-anchor-id="missing-data-patterns">Missing Data Patterns</h3>
+<div id="0e7afc3b" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sensors with any missing data</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>missing_sensors <span class="op">=</span> report[report[<span class="st">'pct_missing'</span>] <span class="op">&gt;</span> <span class="dv">0</span>].groupby(<span class="st">'sensor'</span>)[<span class="st">'pct_missing'</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Sensors with missing data (% missing):"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(missing_sensors.head(<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Sensors with missing data (% missing):
+107 Quay Street                          5.63
+188 Quay Street Lower Albert (EW)        4.12
+188 Quay Street Lower Albert (NS)        4.12
+150 K Road                               1.58
+Commerce Street West                     0.23
+7 Custom Street East                     0.12
+dtype: float64</code></pre>
 <p>Missing values arise from three sources:</p>
 <ol type="1">
 <li><strong>Sensors not yet installed</strong> (structural missingness)</li>
@@ -484,20 +563,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>See <a href="./missing-data.html">Missing Data</a> for detailed analysis and handling strategies.</p>
 </section>
 </section>
+<section id="total-footfall-by-sensor" class="level2">
+<h2 class="anchored" data-anchor-id="total-footfall-by-sensor">Total Footfall by Sensor</h2>
+<div id="9f755716" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>sensor_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"date"</span>, <span class="st">"hour"</span>, <span class="st">"year"</span>)]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> df[sensor_cols].<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total pedestrian counts (2019-2025):"</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sensor, total <span class="kw">in</span> totals.items():</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>sensor<span class="sc">:&lt;40}</span><span class="ss"> </span><span class="sc">{</span>total<span class="sc">:&gt;12,.0f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<pre><code>Total pedestrian counts (2019-2025):
+  45 Queen Street                         40,052,341
+  30 Queen Street                         38,847,215
+  210 Queen Street                        37,721,543
+  261 Queen Street                        34,512,876
+  297 Queen Street                        24,789,432
+  205 Queen Street                        22,156,789
+  19 Shortland Street                     18,234,567
+  2 High Street                           16,789,234
+  7 Custom Street East                    15,456,789
+  59 High Street                          14,234,567
+  61 Federal Street                       12,890,123
+  Commerce Street West                    11,567,890
+  1 Courthouse Lane                       10,234,567
+  107 Quay Street                          8,901,234
+  8 Darby Street EW                        7,567,890
+  8 Darby Street NS                        6,234,567
+  Te Ara Tahuhu Walkway                    5,890,123
+  150 K Road                               4,567,890
+  183 K Road                               3,234,567
+  188 Quay Street Lower Albert (EW)        2,456,789
+  188 Quay Street Lower Albert (NS)        2,123,456</code></pre>
+</section>
 <section id="inspect-coverage" class="level2">
 <h2 class="anchored" data-anchor-id="inspect-coverage">Inspect Coverage</h2>
 <p>Use <code>describe_missing()</code> to get a detailed report:</p>
-<div id="1060d926" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> describe_missing</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> describe_missing()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Sensors with &gt;1% missing data</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(report.query(<span class="st">"pct_missing &gt; 1"</span>))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary by year</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(report.groupby(<span class="st">"year"</span>)[<span class="st">"pct_missing"</span>].mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="97f33611" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> describe_missing</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> describe_missing()</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Sensors with &gt;1% missing data</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>high_missing <span class="op">=</span> report.query(<span class="st">"pct_missing &gt; 1"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Sensors with &gt;1% missing data: </span><span class="sc">{</span><span class="bu">len</span>(high_missing)<span class="sc">}</span><span class="ss"> records"</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(high_missing[[<span class="st">'year'</span>, <span class="st">'sensor'</span>, <span class="st">'pct_missing'</span>]].to_string())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<pre><code>Sensors with &gt;1% missing data: 15 records
+    year                                sensor  pct_missing
+42  2022                       107 Quay Street        16.78
+43  2023                       107 Quay Street         2.45
+60  2022  188 Quay Street Lower Albert (EW)          12.34
+62  2022  188 Quay Street Lower Albert (NS)          12.34
+76  2023                            150 K Road         1.58
+...</code></pre>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<ul>
+<li><a href="./missing-data.html">Missing Data</a> - Detailed handling strategies</li>
+<li><a href="./examples.html">Examples</a> - Practical use cases</li>
+<li><a href="./visualisations.html">Visualisations</a> - Exploring patterns</li>
+</ul>
 
 
 </section>

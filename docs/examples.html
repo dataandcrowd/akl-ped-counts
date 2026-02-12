@@ -250,8 +250,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./visualizations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization Gallery</span></a>
+  <a href="./visualisations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualisation Gallery</span></a>
   </div>
 </li>
       </ul>
@@ -305,7 +305,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="march-daily-trajectories" class="level2">
 <h2 class="anchored" data-anchor-id="march-daily-trajectories">March Daily Trajectories</h2>
 <p>Compare how footfall evolves through March at different sensors, year by year. The COVID-19 impact (2020–2021) and post-recovery trend are clearly visible.</p>
-<div id="1f7ddcb6" class="cell" data-execution_count="1">
+<div id="ff3a3366" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.cm <span class="im">as</span> cm</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -350,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="hourly-heatmap-by-day-of-week" class="level2">
 <h2 class="anchored" data-anchor-id="hourly-heatmap-by-day-of-week">Hourly Heatmap by Day of Week</h2>
 <p>Reveals the weekly rhythm of the CBD — weekday lunchtime peaks, quiet weekend mornings, and Friday/Saturday evening activity.</p>
-<div id="f33f17f0" class="cell" data-execution_count="2">
+<div id="862b84b8" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -394,7 +394,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="abovebelow-average-footfall" class="level2">
 <h2 class="anchored" data-anchor-id="abovebelow-average-footfall">Above/Below Average Footfall</h2>
 <p>Identifies which streets consistently attract more or fewer pedestrians than the city-wide average.</p>
-<div id="aecf0d9e" class="cell" data-execution_count="3">
+<div id="5c879f84" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -426,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="interactive-sensor-map" class="level2">
 <h2 class="anchored" data-anchor-id="interactive-sensor-map">Interactive Sensor Map</h2>
 <p>Create an interactive map showing all 21 sensor locations with circle markers sized by total footfall.</p>
-<div id="b66f3010" class="cell" data-execution_count="4">
+<div id="927df6d4" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> folium</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly, load_locations</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -473,7 +473,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="polars-example-march-daily-totals" class="level2">
 <h2 class="anchored" data-anchor-id="polars-example-march-daily-totals">Polars Example: March Daily Totals</h2>
 <p>Using Polars for efficient computation:</p>
-<div id="79423ec6" class="cell" data-execution_count="5">
+<div id="d6f35077" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts.polars_loader <span class="im">import</span> scan_hourly</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>

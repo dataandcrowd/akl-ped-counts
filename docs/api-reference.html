@@ -250,8 +250,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./visualizations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization Gallery</span></a>
+  <a href="./visualisations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualisation Gallery</span></a>
   </div>
 </li>
       </ul>
@@ -325,7 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p><strong>Returns:</strong> <code>pd.DataFrame</code> with columns <code>date</code>, <code>hour</code>, <code>year</code>, plus one column per sensor</p>
 <p><strong>Example:</strong></p>
-<div id="fde401eb" class="cell" data-execution_count="1">
+<div id="c8c6b249" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># All data</span></span>
@@ -347,7 +347,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Parameters:</strong> Same as <code>load_hourly()</code></p>
 <p><strong>Returns:</strong> <code>pd.DataFrame</code> with columns <code>date</code>, <code>year</code>, plus one column per sensor (daily total)</p>
 <p><strong>Example:</strong></p>
-<div id="95a0cf55" class="cell" data-execution_count="2">
+<div id="d75d1c7c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_daily</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>daily <span class="op">=</span> load_daily(years<span class="op">=</span>[<span class="dv">2023</span>, <span class="dv">2024</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -359,7 +359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Parameters:</strong> Same as <code>load_hourly()</code></p>
 <p><strong>Returns:</strong> <code>pd.DataFrame</code> with columns <code>year_month</code> (Period), <code>year</code>, <code>month</code>, plus one column per sensor</p>
 <p><strong>Example:</strong></p>
-<div id="672ba622" class="cell" data-execution_count="3">
+<div id="2a305182" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_monthly</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>monthly <span class="op">=</span> load_monthly()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -370,7 +370,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Load sensor location metadata.</p>
 <p><strong>Returns:</strong> <code>pd.DataFrame</code> with columns <code>Address</code>, <code>Latitude</code>, <code>Longitude</code> (WGS 84)</p>
 <p><strong>Example:</strong></p>
-<div id="352ad82b" class="cell" data-execution_count="4">
+<div id="1c96d769" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_locations</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>locs <span class="op">=</span> load_locations()</span>
@@ -382,7 +382,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Get the list of all 21 sensor location names.</p>
 <p><strong>Returns:</strong> <code>list</code> of str</p>
 <p><strong>Example:</strong></p>
-<div id="61ff0c42" class="cell" data-execution_count="5">
+<div id="03da2776" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> list_sensors</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sensors <span class="op">=</span> list_sensors()</span>
@@ -394,7 +394,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Get a summary of missing data by year and sensor.</p>
 <p><strong>Returns:</strong> <code>pd.DataFrame</code> with columns <code>year</code>, <code>sensor</code>, <code>total_hours</code>, <code>missing_hours</code>, <code>pct_missing</code></p>
 <p><strong>Example:</strong></p>
-<div id="70d598bb" class="cell" data-execution_count="6">
+<div id="9111082c" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> describe_missing</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> describe_missing()</span>
@@ -409,7 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="load_hourlyyearsnone-sensorsnone-dropnafalse-1"><code>load_hourly(years=None, sensors=None, dropna=False)</code></h3>
 <p>Load hourly counts as a Polars DataFrame.</p>
 <p><strong>Example:</strong></p>
-<div id="be34f912" class="cell" data-execution_count="7">
+<div id="cc201dfa" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts.polars_loader <span class="im">import</span> load_hourly</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly(years<span class="op">=</span>[<span class="dv">2023</span>, <span class="dv">2024</span>])</span>
@@ -426,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p><strong>Returns:</strong> <code>pl.LazyFrame</code></p>
 <p><strong>Example:</strong></p>
-<div id="0b39febb" class="cell" data-execution_count="8">
+<div id="664ffab8" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts.polars_loader <span class="im">import</span> scan_hourly</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -443,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="load_daily-load_monthly-load_locations-describe_missing"><code>load_daily()</code>, <code>load_monthly()</code>, <code>load_locations()</code>, <code>describe_missing()</code></h3>
 <p>Same signatures as pandas versions, but return <code>pl.DataFrame</code>.</p>
 <p><strong>Example:</strong></p>
-<div id="a81e18e5" class="cell" data-execution_count="9">
+<div id="b9a3904d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts.polars_loader <span class="im">import</span> load_daily, load_locations</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>daily <span class="op">=</span> load_daily(years<span class="op">=</span>[<span class="dv">2024</span>], dropna<span class="op">=</span><span class="va">True</span>)</span>
@@ -456,7 +456,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sensors" class="level3">
 <h3 class="anchored" data-anchor-id="sensors"><code>SENSORS</code></h3>
 <p>List of all 21 sensor location names.</p>
-<div id="670106d6" class="cell" data-execution_count="10">
+<div id="0ce470d7" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> SENSORS</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(SENSORS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -465,7 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sensors_added_2022" class="level3">
 <h3 class="anchored" data-anchor-id="sensors_added_2022"><code>SENSORS_ADDED_2022</code></h3>
 <p>List of sensors added in 2022 (not available for 2019-2021).</p>
-<div id="bbbc7378" class="cell" data-execution_count="11">
+<div id="5ef5b499" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> SENSORS_ADDED_2022</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(SENSORS_ADDED_2022)</span>

@@ -250,8 +250,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./visualizations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization Gallery</span></a>
+  <a href="./visualisations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualisation Gallery</span></a>
   </div>
 </li>
       </ul>
@@ -340,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="working-with-uniform-panel">Working with Uniform Panel</h3>
 <p>To work with a consistent set of sensors across all years, filter to the 19 original sensors:</p>
 <p><strong>Pandas:</strong></p>
-<div id="01253fc1" class="cell" data-execution_count="1">
+<div id="208b7a17" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly, SENSORS_ADDED_2022</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
@@ -350,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df_uniform <span class="op">=</span> df[[<span class="st">"date"</span>, <span class="st">"hour"</span>, <span class="st">"year"</span>] <span class="op">+</span> original]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Polars:</strong></p>
-<div id="564a5a6e" class="cell" data-execution_count="2">
+<div id="2202c353" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts.polars_loader <span class="im">import</span> load_hourly</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> SENSORS_ADDED_2022</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -378,7 +378,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="drop-missing-rows" class="level3">
 <h3 class="anchored" data-anchor-id="drop-missing-rows">1. Drop Missing Rows</h3>
 <p>Simplest approach, recommended when completeness matters:</p>
-<div id="092409f4" class="cell" data-execution_count="3">
+<div id="ca5a1917" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly(dropna<span class="op">=</span><span class="va">True</span>)</span>
@@ -391,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="forwardbackward-fill" class="level3">
 <h3 class="anchored" data-anchor-id="forwardbackward-fill">2. Forward/Backward Fill</h3>
 <p>Suitable for short gaps (a few hours):</p>
-<div id="fc6c7501" class="cell" data-execution_count="4">
+<div id="afe75164" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sensor_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"date"</span>, <span class="st">"hour"</span>, <span class="st">"year"</span>)]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -402,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="linear-interpolation" class="level3">
 <h3 class="anchored" data-anchor-id="linear-interpolation">3. Linear Interpolation</h3>
 <p>Smooth estimation across moderate gaps:</p>
-<div id="3abd72a5" class="cell" data-execution_count="5">
+<div id="26746f5a" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sensor_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"date"</span>, <span class="st">"hour"</span>, <span class="st">"year"</span>)]</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -413,7 +413,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="seasonal-median-fill" class="level3">
 <h3 class="anchored" data-anchor-id="seasonal-median-fill">4. Seasonal Median Fill</h3>
 <p>Use the median for the same hour and day-of-week:</p>
-<div id="1d13645b" class="cell" data-execution_count="6">
+<div id="5554c80e" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_hourly()</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sensor_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"date"</span>, <span class="st">"hour"</span>, <span class="st">"year"</span>)]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"dow"</span>] <span class="op">=</span> df[<span class="st">"date"</span>].dt.dayofweek</span>
@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="inspecting-missing-data">Inspecting Missing Data</h2>
 <section id="summary-report" class="level3">
 <h3 class="anchored" data-anchor-id="summary-report">Summary Report</h3>
-<div id="7f4896c3" class="cell" data-execution_count="7">
+<div id="6e1be3a3" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> describe_missing</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> describe_missing()</span>
@@ -439,7 +439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="visualize-missingness" class="level3">
 <h3 class="anchored" data-anchor-id="visualize-missingness">Visualize Missingness</h3>
-<div id="942e51ef" class="cell" data-execution_count="8">
+<div id="d87aed4b" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> akl_ped_counts <span class="im">import</span> load_hourly</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>

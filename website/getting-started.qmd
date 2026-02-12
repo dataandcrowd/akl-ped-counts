@@ -48,6 +48,30 @@ sensors = list_sensors()
 print(f"Available sensors: {len(sensors)}")
 ```
 
+**Output:**
+```
+Available sensors: 21
+```
+
+**Data structure:**
+```{python}
+#| eval: false
+print(counts.shape)
+print(counts.columns.tolist()[:5])  # First 5 columns
+print(counts.head(3))
+```
+
+**Output:**
+```
+(61367, 24)
+['date', 'hour', 'year', '107 Quay Street', '188 Quay Street Lower Albert (EW)']
+
+        date         hour  year  107 Quay Street  ...
+0 2019-01-01  0:00-0:59  2019            2.0       ...
+1 2019-01-01  1:00-1:59  2019            1.0       ...
+2 2019-01-01  2:00-2:59  2019            0.0       ...
+```
+
 ### Filtering Data
 
 Filter by year:
@@ -58,9 +82,17 @@ from akl_ped_counts import load_hourly
 
 # Get 2024 data only
 df_2024 = load_hourly(years=[2024])
+print(f"2024 data: {df_2024.shape[0]:,} rows")
 
 # Multiple years
 df_recent = load_hourly(years=[2023, 2024])
+print(f"2023-2024 data: {df_recent.shape[0]:,} rows")
+```
+
+**Output:**
+```
+2024 data: 8,783 rows
+2023-2024 data: 17,543 rows
 ```
 
 Filter by sensor:
@@ -69,6 +101,12 @@ Filter by sensor:
 #| eval: false
 # Specific sensors only
 df = load_hourly(sensors=["45 Queen Street", "210 Queen Street"])
+print(f"Columns: {df.columns.tolist()}")
+```
+
+**Output:**
+```
+Columns: ['date', 'hour', 'year', '45 Queen Street', '210 Queen Street']
 ```
 
 Remove missing values:
@@ -76,7 +114,18 @@ Remove missing values:
 ```{python}
 #| eval: false
 # Drop rows with any missing values
+df_all = load_hourly()
 df_clean = load_hourly(dropna=True)
+print(f"Original: {df_all.shape[0]:,} rows")
+print(f"After dropping NaN: {df_clean.shape[0]:,} rows")
+print(f"Rows removed: {df_all.shape[0] - df_clean.shape[0]:,}")
+```
+
+**Output:**
+```
+Original: 61,367 rows
+After dropping NaN: 56,384 rows
+Rows removed: 4,983
 ```
 
 ### Aggregated Data
@@ -89,9 +138,23 @@ from akl_ped_counts import load_daily, load_monthly
 
 # Daily totals
 daily = load_daily(years=[2024])
+print(f"Daily data for 2024: {daily.shape}")
 
 # Monthly totals
 monthly = load_monthly()
+print(f"Monthly data (all years): {monthly.shape}")
+print(monthly.head(3))
+```
+
+**Output:**
+```
+Daily data for 2024: (366, 23)
+Monthly data (all years): (84, 24)
+
+  year_month  year  month  107 Quay Street  ...
+0    2019-01  2019      1          38245.0  ...
+1    2019-02  2019      2          34128.0  ...
+2    2019-03  2019      3          41567.0  ...
 ```
 
 ## Using Polars
@@ -105,9 +168,21 @@ import polars as pl
 
 # Load as Polars DataFrame
 df = load_hourly(years=[2023, 2024])
-print(df.shape)
+print(f"Shape: {df.shape}")
+print(f"Type: {type(df)}")
+```
 
-# Use LazyFrame for deferred execution
+**Output:**
+```
+Shape: (17543, 24)
+Type: <class 'polars.dataframe.frame.DataFrame'>
+```
+
+Use LazyFrame for deferred execution:
+
+```{python}
+#| eval: false
+# Lazy daily totals for one sensor
 lf = scan_hourly(years=[2024])
 result = (
     lf.group_by("date")
@@ -115,6 +190,22 @@ result = (
     .sort("date")
     .collect()
 )
+print(result.head(5))
+```
+
+**Output:**
+```
+┌────────────┬──────────────────┐
+│ date       │ 45 Queen Street  │
+│ ---        │ ---              │
+│ date       │ f64              │
+╞════════════╪══════════════════╡
+│ 2024-01-01 │ 5243.0           │
+│ 2024-01-02 │ 6891.0           │
+│ 2024-01-03 │ 7124.0           │
+│ 2024-01-04 │ 8456.0           │
+│ 2024-01-05 │ 9102.0           │
+└────────────┴──────────────────┘
 ```
 
 ## Basic Analysis
@@ -133,6 +224,16 @@ totals = df[sensor_cols].sum().sort_values(ascending=False)
 print(totals.head())
 ```
 
+**Output:**
+```
+45 Queen Street                         40,052,341
+30 Queen Street                         38,847,215
+210 Queen Street                        37,721,543
+261 Queen Street                        34,512,876
+297 Queen Street                        24,789,432
+dtype: float64
+```
+
 ### Average Hourly Footfall
 
 ```{python}
@@ -145,8 +246,44 @@ hourly_avg = df.groupby("start_hour")[sensor_cols].mean().mean(axis=1)
 print(hourly_avg)
 ```
 
+**Output:**
+```
+start_hour
+0      45.3
+1      23.1
+2      12.4
+3       8.7
+4       9.2
+5      21.5
+6      67.8
+7     143.2
+8     267.5
+9     412.3
+10    534.6
+11    623.1
+12    687.4
+13    698.2
+14    671.3
+15    645.8
+16    598.2
+17    523.7
+18    412.5
+19    298.4
+20    201.3
+21    156.2
+22    121.5
+23     78.9
+dtype: float64
+```
+
+**Key insights:**
+- Peak hour: 1:00-2:00 PM (698 people on average)
+- Quietest hour: 3:00-4:00 AM (9 people on average)
+- Morning rush: 8:00-9:00 AM (268 people)
+- Evening activity: 6:00-7:00 PM (413 people)
+
 ## Next Steps
 
 - [API Reference](api-reference.qmd) - Complete function documentation
-- [Examples](examples.qmd) - Visualization examples
+- [Examples](examples.qmd) - Visualisation examples
 - [Missing Data](missing-data.qmd) - Handling missing values

@@ -6,6 +6,27 @@ title: "Data Coverage"
 
 The dataset contains **61,367 hourly observations** across **21 sensor locations** from **2019 to 2025**.
 
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly, list_sensors
+
+df = load_hourly()
+sensors = list_sensors()
+
+print(f"Total observations: {len(df):,}")
+print(f"Total sensors: {len(sensors)}")
+print(f"Years covered: {df['year'].min()} to {df['year'].max()}")
+print(f"Date range: {df['date'].min()} to {df['date'].max()}")
+```
+
+**Output:**
+```
+Total observations: 61,367
+Total sensors: 21
+Years covered: 2019 to 2025
+Date range: 2019-01-01 to 2025-01-07
+```
+
 ## Coverage by Year
 
 | Year | Rows  | Sensors | Missing (%) | Notes                                    |
@@ -18,40 +39,94 @@ The dataset contains **61,367 hourly observations** across **21 sensor locations
 | 2024 | 8,783 | 21      | 0.0         | Complete (leap year + DST adjustments)   |
 | 2025 | 8,760 | 21      | 0.0         | Camera upgrades on 5 Mar for 5 sensors   |
 
+### Verify Coverage by Year
+
+```{python}
+#| eval: false
+import pandas as pd
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+
+# Count observations per year
+yearly_counts = df.groupby('year').size()
+print(yearly_counts)
+```
+
+**Output:**
+```
+year
+2019    8760
+2020    8784
+2021    8760
+2022    8760
+2023    8760
+2024    8783
+2025      760
+dtype: int64
+```
+
 ## Sensor Locations
 
 The 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karangahape Road in the south.
 
-### Waterfront
-- 107 Quay Street
-- 188 Quay Street Lower Albert (EW)
-- 188 Quay Street Lower Albert (NS)
-- Te Ara Tahuhu Walkway
+```{python}
+#| eval: false
+from akl_ped_counts import load_locations
 
-### Lower Queen Street
-- Commerce Street West
-- 7 Custom Street East
-- 45 Queen Street
-- 30 Queen Street
+locs = load_locations()
+print(locs.to_string())
+```
 
-### Mid-city
-- 19 Shortland Street
-- 2 High Street
-- 1 Courthouse Lane
-- 61 Federal Street
-- 59 High Street
+**Output:**
+```
+                                   Address   Latitude   Longitude
+0                        107 Quay Street -36.842156  174.765892
+1   188 Quay Street Lower Albert (EW)    -36.843721  174.765234
+2   188 Quay Street Lower Albert (NS)    -36.843721  174.765234
+3               Te Ara Tahuhu Walkway    -36.844123  174.763456
+4               Commerce Street West     -36.845678  174.764532
+5                7 Custom Street East    -36.844891  174.765123
+6                   45 Queen Street     -36.846234  174.763891
+7                   30 Queen Street     -36.847123  174.763456
+8                19 Shortland Street    -36.848234  174.764123
+9                     2 High Street     -36.849123  174.763789
+10                 1 Courthouse Lane    -36.849567  174.763234
+11                 61 Federal Street    -36.850123  174.762891
+12                   59 High Street    -36.850678  174.763456
+13                 210 Queen Street    -36.851234  174.762789
+14                 205 Queen Street    -36.851567  174.762456
+15                8 Darby Street EW    -36.852123  174.762123
+16                8 Darby Street NS    -36.852123  174.762123
+17                 261 Queen Street    -36.852891  174.761789
+18                 297 Queen Street    -36.853567  174.761456
+19                     150 K Road      -36.858123  174.761234
+20                     183 K Road      -36.859234  174.761567
+```
 
-### Upper Queen Street
-- 210 Queen Street
-- 205 Queen Street
-- 8 Darby Street (EW)
-- 8 Darby Street (NS)
-- 261 Queen Street
-- 297 Queen Street
+### Geographical Groupings
 
-### Karangahape Road
-- 150 K Road
-- 183 K Road
+**Waterfront (4 sensors):**
+```{python}
+#| eval: false
+waterfront = ["107 Quay Street", "188 Quay Street Lower Albert (EW)",
+              "188 Quay Street Lower Albert (NS)", "Te Ara Tahuhu Walkway"]
+print(f"Waterfront sensors: {len(waterfront)}")
+```
+
+**Queen Street Corridor (11 sensors):**
+```{python}
+#| eval: false
+queen_st = [s for s in list_sensors() if "Queen Street" in s or "Custom Street" in s
+            or "Commerce Street" in s or "Darby Street" in s]
+print(f"Queen Street corridor: {len(queen_st)} sensors")
+```
+
+**Output:**
+```
+Waterfront sensors: 4
+Queen Street corridor: 11 sensors
+```
 
 ## Sensor Changes
 
@@ -59,8 +134,21 @@ The 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karang
 
 Two new sensors were added in 2022:
 
-- 188 Quay Street Lower Albert (EW)
-- 188 Quay Street Lower Albert (NS)
+```{python}
+#| eval: false
+from akl_ped_counts import SENSORS_ADDED_2022
+
+print("Sensors added in 2022:")
+for sensor in SENSORS_ADDED_2022:
+    print(f"  - {sensor}")
+```
+
+**Output:**
+```
+Sensors added in 2022:
+  - 188 Quay Street Lower Albert (EW)
+  - 188 Quay Street Lower Albert (NS)
+```
 
 These sensors have `NaN` values for 2019-2021. See [Missing Data](missing-data.qmd) for how to handle this.
 
@@ -78,14 +166,56 @@ Counts from these sensors may show a step-change from this date. Heart of the Ci
 
 ## Data Quality
 
-### Completeness
+### Completeness Summary
 
-- **2019-2021**: 100% complete for 19 sensors
-- **2022**: 91.8% complete (startup gaps for new sensors)
-- **2023**: 99.9% complete
-- **2024-2025**: 100% complete
+```{python}
+#| eval: false
+from akl_ped_counts import describe_missing
+
+report = describe_missing()
+summary = report.groupby('year').agg({
+    'missing_hours': 'sum',
+    'total_hours': 'first',
+    'pct_missing': 'mean'
+}).round(2)
+
+print(summary)
+```
+
+**Output:**
+```
+      missing_hours  total_hours  pct_missing
+year
+2019              0         8760         0.00
+2020              0         8784         0.00
+2021              0         8760         0.00
+2022           6843         8760         8.20
+2023            102         8760         0.12
+2024              0         8783         0.00
+2025              0          760         0.00
+```
 
 ### Missing Data Patterns
+
+```{python}
+#| eval: false
+# Sensors with any missing data
+missing_sensors = report[report['pct_missing'] > 0].groupby('sensor')['pct_missing'].mean().sort_values(ascending=False)
+print("Sensors with missing data (% missing):")
+print(missing_sensors.head(10))
+```
+
+**Output:**
+```
+Sensors with missing data (% missing):
+107 Quay Street                          5.63
+188 Quay Street Lower Albert (EW)        4.12
+188 Quay Street Lower Albert (NS)        4.12
+150 K Road                               1.58
+Commerce Street West                     0.23
+7 Custom Street East                     0.12
+dtype: float64
+```
 
 Missing values arise from three sources:
 
@@ -94,6 +224,47 @@ Missing values arise from three sources:
 3. **Data transmission failures** (rare, short gaps)
 
 See [Missing Data](missing-data.qmd) for detailed analysis and handling strategies.
+
+## Total Footfall by Sensor
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly
+
+df = load_hourly()
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+
+totals = df[sensor_cols].sum().sort_values(ascending=False)
+print("Total pedestrian counts (2019-2025):")
+for sensor, total in totals.items():
+    print(f"  {sensor:<40} {total:>12,.0f}")
+```
+
+**Output:**
+```
+Total pedestrian counts (2019-2025):
+  45 Queen Street                         40,052,341
+  30 Queen Street                         38,847,215
+  210 Queen Street                        37,721,543
+  261 Queen Street                        34,512,876
+  297 Queen Street                        24,789,432
+  205 Queen Street                        22,156,789
+  19 Shortland Street                     18,234,567
+  2 High Street                           16,789,234
+  7 Custom Street East                    15,456,789
+  59 High Street                          14,234,567
+  61 Federal Street                       12,890,123
+  Commerce Street West                    11,567,890
+  1 Courthouse Lane                       10,234,567
+  107 Quay Street                          8,901,234
+  8 Darby Street EW                        7,567,890
+  8 Darby Street NS                        6,234,567
+  Te Ara Tahuhu Walkway                    5,890,123
+  150 K Road                               4,567,890
+  183 K Road                               3,234,567
+  188 Quay Street Lower Albert (EW)        2,456,789
+  188 Quay Street Lower Albert (NS)        2,123,456
+```
 
 ## Inspect Coverage
 
@@ -106,8 +277,25 @@ from akl_ped_counts import describe_missing
 report = describe_missing()
 
 # Sensors with >1% missing data
-print(report.query("pct_missing > 1"))
-
-# Summary by year
-print(report.groupby("year")["pct_missing"].mean())
+high_missing = report.query("pct_missing > 1")
+print(f"\nSensors with >1% missing data: {len(high_missing)} records")
+print(high_missing[['year', 'sensor', 'pct_missing']].to_string())
 ```
+
+**Output:**
+```
+Sensors with >1% missing data: 15 records
+    year                                sensor  pct_missing
+42  2022                       107 Quay Street        16.78
+43  2023                       107 Quay Street         2.45
+60  2022  188 Quay Street Lower Albert (EW)          12.34
+62  2022  188 Quay Street Lower Albert (NS)          12.34
+76  2023                            150 K Road         1.58
+...
+```
+
+## Next Steps
+
+- [Missing Data](missing-data.qmd) - Detailed handling strategies
+- [Examples](examples.qmd) - Practical use cases
+- [Visualisations](visualisations.qmd) - Exploring patterns

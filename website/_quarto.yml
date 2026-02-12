@@ -42,7 +42,7 @@ website:
       - section: "Examples"
         contents:
           - examples.qmd
-          - visualizations.qmd
+          - visualisations.qmd
 
 format:
   html:

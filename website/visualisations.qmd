@@ -1,8 +1,8 @@
 ---
-title: "Visualization Gallery"
+title: "Visualisation Gallery"
 ---
 
-This page showcases various ways to visualize the pedestrian count data.
+This page showcases various ways to visualise the pedestrian count data.
 
 ## Time Series Analysis
 

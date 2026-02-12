@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "akl-ped-counts"
-version = "0.1.0"
+version = "0.1.1"
 description = "Hourly pedestrian count data from Heart of the City Auckland's monitoring system (2019–2025), covering 21 sensor locations across Auckland CBD."
 readme = "README.md"
 license = "CC-BY-4.0"
@@ -47,9 +47,9 @@ geo = ["folium>=0.14.0"]
 all = ["polars>=0.20.0", "matplotlib>=3.5.0", "seaborn>=0.12.0", "folium>=0.14.0"]
 
 [project.urls]
-Homepage = "https://github.com/hyesop/akl-ped-counts"
-Repository = "https://github.com/hyesop/akl-ped-counts"
-Documentation = "https://github.com/hyesop/akl-ped-counts#readme"
+Homepage = "https://dataandcrowd.github.io/akl-ped-counts"
+Repository = "https://github.com/dataandcrowd/akl-ped-counts"
+Documentation = "https://dataandcrowd.github.io/akl-ped-counts"
 "Data Source" = "https://www.hotcity.co.nz/pedestrian-counts"
 
 [tool.hatch.build.targets.sdist]

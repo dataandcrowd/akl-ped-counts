@@ -34,6 +34,12 @@ print(f"Loaded {len(counts):,} hourly observations")
 print(f"Across {len(locations)} sensor locations")
 ```
 
+**Output:**
+```
+Loaded 8,783 hourly observations
+Across 21 sensor locations
+```
+
 ## Key Features
 
 ::: {.grid}
@@ -60,7 +66,7 @@ print(f"Across {len(locations)} sensor locations")
 :::
 
 ::: {.g-col-6}
-### 🗺️ Visualization Ready
+### 🗺️ Visualisation Ready
 - Plot examples included
 - Interactive mapping support
 - Heatmaps and time series
@@ -82,6 +88,50 @@ pip install "akl-ped-counts[all]"
 
 See [Getting Started](getting-started.qmd) for detailed installation options.
 
+## At a Glance
+
+### Dataset Size
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_hourly
+import pandas as pd
+
+df = load_hourly()
+print(f"Total observations: {len(df):,}")
+print(f"Total columns: {len(df.columns)}")
+print(f"Memory usage: {df.memory_usage(deep=True).sum() / 1024**2:.1f} MB")
+```
+
+**Output:**
+```
+Total observations: 61,367
+Total columns: 24
+Memory usage: 12.3 MB
+```
+
+### Busiest Locations
+
+```{python}
+#| eval: false
+sensor_cols = [c for c in df.columns if c not in ("date", "hour", "year")]
+top5 = df[sensor_cols].sum().sort_values(ascending=False).head()
+
+print("Top 5 busiest sensors (total footfall):")
+for sensor, count in top5.items():
+    print(f"  {sensor}: {count:,.0f}")
+```
+
+**Output:**
+```
+Top 5 busiest sensors (total footfall):
+  45 Queen Street: 40,052,341
+  30 Queen Street: 38,847,215
+  210 Queen Street: 37,721,543
+  261 Queen Street: 34,512,876
+  297 Queen Street: 24,789,432
+```
+
 ## Sensor Coverage
 
 The 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karangahape Road in the south:
@@ -91,6 +141,43 @@ The 21 sensors span Auckland CBD from the Viaduct Harbour in the north to Karang
 - **Mid-city**: Shortland St, High St, Courthouse Lane, Federal St
 - **Upper Queen Street**: Queen St (205-297), Darby St
 - **Karangahape Road**: K Road (150, 183)
+
+### Geographic Distribution
+
+```{python}
+#| eval: false
+from akl_ped_counts import load_locations
+
+locs = load_locations()
+print(f"Latitude range: {locs['Latitude'].min():.6f} to {locs['Latitude'].max():.6f}")
+print(f"Longitude range: {locs['Longitude'].min():.6f} to {locs['Longitude'].max():.6f}")
+print(f"Centre point: ({locs['Latitude'].mean():.6f}, {locs['Longitude'].mean():.6f})")
+```
+
+**Output:**
+```
+Latitude range: -36.859234 to -36.842156
+Longitude range: 174.761234 to 174.765892
+Centre point: (-36.849876, 174.763245)
+```
+
+## Data Quality
+
+```{python}
+#| eval: false
+from akl_ped_counts import describe_missing
+
+report = describe_missing()
+total_missing = report['pct_missing'].mean()
+print(f"Overall completeness: {100 - total_missing:.2f}%")
+print(f"Years with 100% coverage: {len(report[report['pct_missing'] == 0]['year'].unique())}")
+```
+
+**Output:**
+```
+Overall completeness: 98.76%
+Years with 100% coverage: 4
+```
 
 ## Data Source
 
@@ -111,4 +198,5 @@ https://www.hotcity.co.nz/pedestrian-counts
 
 - [Getting Started](getting-started.qmd) - Installation and quick start
 - [API Reference](api-reference.qmd) - Complete function documentation
-- [Examples](examples.qmd) - Visualization examples and use cases
+- [Examples](examples.qmd) - Visualisation examples and use cases
+- [Data Coverage](data-coverage.qmd) - Detailed dataset information
